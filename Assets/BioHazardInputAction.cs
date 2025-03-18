@@ -89,6 +89,24 @@ public partial class @BioHazardInputAction: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Interact"",
+                    ""type"": ""Button"",
+                    ""id"": ""994980b3-f8f1-4647-bba5-6323eca696a5"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""OpenInventory"",
+                    ""type"": ""Button"",
+                    ""id"": ""977d55cc-285d-4374-93ca-002df17ce082"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -353,6 +371,28 @@ public partial class @BioHazardInputAction: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""StopEditor"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""230f8275-e9e1-4629-866c-d04ee055c7e9"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Interact"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""987146f2-8fd1-45cc-aef2-f8b6cf147bd6"",
+                    ""path"": ""<Keyboard>/tab"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""OpenInventory"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -947,6 +987,8 @@ public partial class @BioHazardInputAction: IInputActionCollection2, IDisposable
         m_Player_EquipSub = m_Player.FindAction("EquipSub", throwIfNotFound: true);
         m_Player_Setup = m_Player.FindAction("Setup", throwIfNotFound: true);
         m_Player_StopEditor = m_Player.FindAction("StopEditor", throwIfNotFound: true);
+        m_Player_Interact = m_Player.FindAction("Interact", throwIfNotFound: true);
+        m_Player_OpenInventory = m_Player.FindAction("OpenInventory", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1027,6 +1069,8 @@ public partial class @BioHazardInputAction: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_EquipSub;
     private readonly InputAction m_Player_Setup;
     private readonly InputAction m_Player_StopEditor;
+    private readonly InputAction m_Player_Interact;
+    private readonly InputAction m_Player_OpenInventory;
     public struct PlayerActions
     {
         private @BioHazardInputAction m_Wrapper;
@@ -1038,6 +1082,8 @@ public partial class @BioHazardInputAction: IInputActionCollection2, IDisposable
         public InputAction @EquipSub => m_Wrapper.m_Player_EquipSub;
         public InputAction @Setup => m_Wrapper.m_Player_Setup;
         public InputAction @StopEditor => m_Wrapper.m_Player_StopEditor;
+        public InputAction @Interact => m_Wrapper.m_Player_Interact;
+        public InputAction @OpenInventory => m_Wrapper.m_Player_OpenInventory;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1068,6 +1114,12 @@ public partial class @BioHazardInputAction: IInputActionCollection2, IDisposable
             @StopEditor.started += instance.OnStopEditor;
             @StopEditor.performed += instance.OnStopEditor;
             @StopEditor.canceled += instance.OnStopEditor;
+            @Interact.started += instance.OnInteract;
+            @Interact.performed += instance.OnInteract;
+            @Interact.canceled += instance.OnInteract;
+            @OpenInventory.started += instance.OnOpenInventory;
+            @OpenInventory.performed += instance.OnOpenInventory;
+            @OpenInventory.canceled += instance.OnOpenInventory;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -1093,6 +1145,12 @@ public partial class @BioHazardInputAction: IInputActionCollection2, IDisposable
             @StopEditor.started -= instance.OnStopEditor;
             @StopEditor.performed -= instance.OnStopEditor;
             @StopEditor.canceled -= instance.OnStopEditor;
+            @Interact.started -= instance.OnInteract;
+            @Interact.performed -= instance.OnInteract;
+            @Interact.canceled -= instance.OnInteract;
+            @OpenInventory.started -= instance.OnOpenInventory;
+            @OpenInventory.performed -= instance.OnOpenInventory;
+            @OpenInventory.canceled -= instance.OnOpenInventory;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -1282,6 +1340,8 @@ public partial class @BioHazardInputAction: IInputActionCollection2, IDisposable
         void OnEquipSub(InputAction.CallbackContext context);
         void OnSetup(InputAction.CallbackContext context);
         void OnStopEditor(InputAction.CallbackContext context);
+        void OnInteract(InputAction.CallbackContext context);
+        void OnOpenInventory(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

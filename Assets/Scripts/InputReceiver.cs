@@ -14,6 +14,9 @@ public class InputReceiver : MonoBehaviour
     [SerializeField]
     CameraRotater _cameraRotater;
 
+    [SerializeField]
+    UIManager _uiManager;
+
     Vector2 _inputVelocity;
 
     private void OnMove(InputAction.CallbackContext callbackContext)
@@ -28,7 +31,7 @@ public class InputReceiver : MonoBehaviour
 
     private void OnFire(InputAction.CallbackContext callbackContext)
     {
-        _inventory.EquippedWeapon?.Fire();
+        _inventory.EquippedWeapon?.Fire(); // Characterのメソッドを経由した方が良いのでは？
     }
 
     private void OnEquipMain(InputAction.CallbackContext callbackContext)
@@ -53,6 +56,16 @@ public class InputReceiver : MonoBehaviour
         }
     }
 
+    private void OnInteract(InputAction.CallbackContext callbackContext)
+    {
+        _man.Interact();
+    }
+
+    private void OnOpenInventory(InputAction.CallbackContext callbackContext)
+    {
+        _uiManager.OpenAndCloseInventory();
+    }
+
     private void Start()
     {
         BioHazardInputAction inputAction = new BioHazardInputAction();
@@ -70,6 +83,10 @@ public class InputReceiver : MonoBehaviour
 
         inputAction.Player.Setup.performed += OnSetup;
         inputAction.Player.Setup.canceled += OnSetup;
+
+        inputAction.Player.Interact.performed += OnInteract;
+
+        inputAction.Player.OpenInventory.performed += OnOpenInventory;
 
         inputAction.Enable();
     }

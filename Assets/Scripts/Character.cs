@@ -2,11 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Character : MonoBehaviour
+public class Character : Humanoid
 {
-    [SerializeField]
-    float _speed;
-
     [SerializeField]
     GameObject _cameraRoot;
 
@@ -26,23 +23,74 @@ public class Character : MonoBehaviour
     Rigidbody _rb;
 
     [SerializeField]
-    Animator _animator;
+    LayerMask _interactionLayer;
+
+
+    [SerializeField]
+    float _aimDistance;
+
+    [SerializeField]
+    float _aimSpeed;
+
 
     public State normalState { get; private set; }
     public State aimState { get; private set; }
 
     State _state;
-    Vector2 _currentVelocity;
 
-    public void Move(Vector2 direction)
+
+    // 以下Debug用
+    Vector3 _interactPosition;
+
+
+    private void OnDrawGizmos() // 最終的には分離した方が良いよ
     {
-        _currentVelocity = _speed * direction;
+        Gizmos.DrawWireSphere(_interactPosition, 0.5f);
+    }
+
+    public override void Damage(int value)
+    {
+        base.HP -= value;
+
+        ExeHitAnimation();
+    }
+
+    protected override void ExeHitAnimation()
+    {
+
     }
 
     public void ChangeStateTo(State state)
     {
         _state = state;
         _state.Start();
+    }
+
+    public void Interact()
+    {
+        if (_state is NormalState)
+        {
+            _interactPosition = this.transform.position;
+
+            Collider[] colliders;
+            if ((colliders = Physics.OverlapCapsule(this.transform.position, this.transform.position.AddY(1.5f), 0.5f, _interactionLayer)).Length > 0)
+            {
+                Debug.Log(colliders[0].gameObject);
+
+                if (colliders[0].gameObject.TryGetComponent(out InteractedObject interactedObject))
+                {
+                    if (interactedObject is DroppedItem)
+                    {
+                        //_inventory.Add((interactedObject as DroppedItem).getItem, (interactedObject as DroppedItem).amount);
+                        (interactedObject as DroppedItem).Gotten();
+                    }
+                    else
+                    {
+                        interactedObject.Interacted();
+                    }
+                }
+            }
+        }
     }
 
     private void Start()
@@ -55,14 +103,14 @@ public class Character : MonoBehaviour
 
     private void Update()
     {
+        _state.Update();
     }
 
     private void FixedUpdate()
     {
-        _state.Update();
-
-        _rb.velocity = _currentVelocity.ToVector3XZ().AddY(_rb.velocity.y);
-        _animator.SetFloat("Speed", _rb.velocity.magnitude, 0.1f, Time.deltaTime);
+        //_rb.velocity = _currentVelocity.ToVector3XZ().AddY(_rb.velocity.y);
+        //_animator.SetFloat("Speed", _rb.velocity.magnitude, 0.1f, Time.deltaTime);
+        _animator.SetFloat("Speed", _currentVelocity.magnitude, base.SecondsToMaxSpeed, Time.deltaTime);
     }
 
     public abstract class State
@@ -115,10 +163,19 @@ public class Character : MonoBehaviour
             base.man._cameraRotater?.Rotate();
 
             // カメラ方向を向くように回転
-            base.man.transform.rotation = Quaternion.Slerp(base.man.transform.rotation, Quaternion.LookRotation(base.man._cameraRoot.transform.forward.RemoveY()), 0.5f);
+            //base.man.transform.rotation = Quaternion.Slerp(base.man.transform.rotation, Quaternion.LookRotation(base.man._cameraRoot.transform.forward.RemoveY()), 0.5f);
+            base.man.transform.forward = Vector3.Slerp(base.man.transform.forward, (base.man._aimSphere.transform.position - base.man.transform.position).RemoveY(), base.man._aimSpeed * Time.deltaTime);
 
-            base.man._aimSphere.transform.position = Vector3.Slerp(base.man._aimSphere.transform.position, base.man._cameraRoot.transform.position + 10 * base.man._cameraRoot.transform.forward, 0.5f);
-
+            Ray ray = Camera.main.ViewportPointToRay(Vector2.one / 2);
+            //RaycastHit hit;
+            if (Physics.Raycast(ray, out RaycastHit hit, base.man._aimDistance))
+            {
+                base.man._aimSphere.transform.position = Vector3.Lerp(base.man._aimSphere.transform.position, hit.point, base.man._aimSpeed * Time.deltaTime);
+            }
+            else
+            {
+                base.man._aimSphere.transform.position = Vector3.Lerp(base.man._aimSphere.transform.position, Camera.main.transform.position + Camera.main.transform.forward * base.man._aimDistance, base.man._aimSpeed * Time.deltaTime);
+            }
         }
     }
 }

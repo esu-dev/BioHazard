@@ -15,6 +15,7 @@ public class BuildingTool : EditorWindow
     GameObject _cursorObject;
 
     Vector3 _snapValue;
+    Vector3 _snappedPos;
 
     SerializedObject _serializedObject;
     SerializedProperty _listProperty;
@@ -43,21 +44,24 @@ public class BuildingTool : EditorWindow
 
         _snapValue = EditorGUILayout.Vector3Field("snap", _snapValue);
 
-        if (_prefabList != null && _prefabList.Count() > 0 && _prefabList[0])
+        // テクスチャ表示
+        GUILayout.BeginHorizontal();
+        for (int i = 0; i < _reorderableList.count; i++)
         {
-            SerializedProperty elementProperty = _listProperty.GetArrayElementAtIndex(0);
+            SerializedProperty elementProperty = _listProperty.GetArrayElementAtIndex(i);
             Texture2D texture = AssetPreview.GetAssetPreview(elementProperty.objectReferenceValue);
 
-            Rect rect = new Rect() { position = new Vector2(100, 100), size = new Vector2(50, 50) };
-            GUI.DrawTexture(rect, texture);
+            if (texture)
+            {
+                if (GUILayout.Button(texture, GUILayout.Width(100), GUILayout.Height(100)))
+                {
+                    Debug.Log("click");
+                }
+            }
         }
+        GUILayout.EndHorizontal();
 
         _serializedObject.ApplyModifiedProperties();
-    }
-
-    private void OnDrawGizmos()
-    {
-        
     }
 
     private void OnEnable()
@@ -93,9 +97,12 @@ public class BuildingTool : EditorWindow
                         _cursorObject = Instantiate(_prefabList[0], Vector3.zero, Quaternion.identity);
                     }
 
+                    // 位置移動
                     //Vector3 snappedPos = hit.point.Select(v => Mathf.RoundToInt(v / _snapValue) * _snapValue);
-                    Vector3 snappedPos = (hit.point.Devide(_snapValue)).Select(v => Mathf.RoundToInt(v)).Times(_snapValue);
-                    _cursorObject.transform.position = snappedPos;
+                    _snappedPos = (hit.point.Devide(_snapValue)).Select(v => Mathf.RoundToInt(v)).Times(_snapValue);
+                    _cursorObject.transform.position = _snappedPos;
+
+                    
 
                     if (Event.current.button == 0 && Event.current.type == EventType.MouseDown)
                     {
