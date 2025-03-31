@@ -74,3 +74,5 @@ crashlytics-build.properties
 # UnityAssetsは重いからLFSでも追跡しない
 /Assets/UnityAssets
 /Assets/Mixamo
+
+/Assets/TextMesh Pro/Resources/Fonts & Materials

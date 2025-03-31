@@ -14,6 +14,8 @@ public class ItemSlot : MonoBehaviour
 
     [field: SerializeField] public int SlotID { get; private set; }
 
+    Vector2Int _slotPosition;
+
 
     public void SetImage(Sprite sprite)
     {
@@ -24,5 +26,15 @@ public class ItemSlot : MonoBehaviour
     public void SetClickEvent(UnityAction callback)
     {
         _button.onClick.AddListener(callback);
+    }
+
+    public void RemoveAllClickEvent()
+    {
+        _button.onClick.RemoveAllListeners();
+    }
+
+    public void SetSlotPosition(Vector2Int slotPosition)
+    {
+        _slotPosition = slotPosition;
     }
 }

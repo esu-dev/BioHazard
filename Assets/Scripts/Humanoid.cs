@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class Humanoid : MonoBehaviour
+public abstract class Humanoid : FlexUpdateMonoBehaviour
 {
     [SerializeField]
     protected int HP;

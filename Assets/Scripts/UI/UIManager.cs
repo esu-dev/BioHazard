@@ -16,11 +16,18 @@ public class UIManager : MonoBehaviour
     {
         if (!_uiPannel.activeSelf)
         {
+            (GameStateManager.Instance as GameStateManager).ChangeStateToPauseState();
             _inventoryUI.Open();
         }
         else
         {
+            (GameStateManager.Instance as GameStateManager).ChangeStateToPlayState();
             _inventoryUI.Close();
         }
+    }
+
+    private void Start()
+    {
+        _inventoryUI.Initialize();
     }
 }

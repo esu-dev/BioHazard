@@ -29,8 +29,8 @@ public class Inventory : MonoBehaviour
 
     [field: SerializeField] public Vector2Int ItemSlotMatrixNum = new Vector2Int(4, 2);
 
-    [field: SerializeField] public List<List<ItemSet>> ItemList { get; private set; } = new List<List<ItemSet>>();
-
+    List<List<ItemSet>> _itemList = new List<List<ItemSet>>();
+    public IEnumerable<IEnumerable<ItemSet>> ItemList => _itemList;
     public Weapon EquippedWeapon { get; private set; }
 
     Weapon _mainWeapon;
@@ -39,13 +39,16 @@ public class Inventory : MonoBehaviour
 
     public void Add(ItemData itemData, Vector2Int position, int amount = 1)
     {
-        ItemList[position.y][position.x].itemData = itemData;
-        ItemList[position.y][position.x].amount += amount;
-
-        for (int i = 1; i < itemData.Size; i++)
+        if (_itemList[position.y][position.x] == null)
         {
-            ItemList[position.y][position.x + i].itemData = itemData;
+            _itemList[position.y][position.x] = new ItemSet(itemData);
+            _itemList[position.y][position.x].amount = amount;
         }
+
+        /*for (int i = 1; i < itemData.Size; i++)
+        {
+            _itemList[position.y][position.x + i].itemData = itemData;
+        }*/
     }
 
     public void EquipMain()
@@ -80,7 +83,7 @@ public class Inventory : MonoBehaviour
 
     private void RegisterMainWeapon(ItemData itemData)
     {
-        _mainWeapon = Instantiate(itemData.Prefab).AddComponent<Weapon>(); ;
+        _mainWeapon = Instantiate(itemData.Prefab).AddComponent<Weapon>();
     }
 
     private void Start()
@@ -88,20 +91,26 @@ public class Inventory : MonoBehaviour
         // ItemListÇÃèâä˙âª
         for (int i = 0; i < ItemSlotMatrixNum.y; i++)
         {
-            ItemList.Add(new List<ItemSet>());
+            _itemList.Add(new List<ItemSet>());
             for (int j = 0; j < ItemSlotMatrixNum.x; j++)
             {
-                ItemList[i].Add(new ItemSet());
+                _itemList[i].Add(null);
             }
         }
 
-        RegisterMainWeapon(ItemList[0][0].itemData);
+        //RegisterMainWeapon(ItemList[0][0].itemData);
     }
 }
 
 [System.Serializable]
 public class ItemSet
 {
-    public ItemData itemData;
+    public readonly ItemData itemData;
+    public Vector2Int mainPosition;
     public int amount;
+
+    public ItemSet(ItemData itemData)
+    {
+        this.itemData = itemData;
+    }
 }

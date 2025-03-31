@@ -26,4 +26,17 @@ public class ItemData : ScriptableObject
 
     [field: SerializeField]
     public GameObject Prefab { get; private set; }
+
+
+    [field: SerializeField]
+    public Vector3 DefaultPosition;
+
+    [field: SerializeField]
+    public Vector3 DefaultRotation;
+
+
+    public void SetImage(Sprite sprite)
+    {
+        Image = sprite;
+    }
 }

@@ -18,4 +18,9 @@ public static class ColorExtension
     {
         return new Color(color.r, color.g, color.b, color.a + a);
     }
+
+    public static Color SetAlpha(this Color color, float a)
+    {
+        return new Color(color.r, color.g, color.b, a);
+    }
 }

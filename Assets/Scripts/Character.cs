@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Character : Humanoid
 {
@@ -12,6 +13,9 @@ public class Character : Humanoid
 
     [SerializeField]
     Inventory _inventory;
+
+    [SerializeField]
+    Mover _mover;
 
     [SerializeField]
     CameraRotater _cameraRotater;
@@ -31,6 +35,9 @@ public class Character : Humanoid
 
     [SerializeField]
     float _aimSpeed;
+
+
+    public UnityEvent<InteractedObject> OnInterect = new UnityEvent<InteractedObject>();
 
 
     public State normalState { get; private set; }
@@ -63,7 +70,7 @@ public class Character : Humanoid
     public void ChangeStateTo(State state)
     {
         _state = state;
-        _state.Start();
+        _state.Enter();
     }
 
     public void Interact()
@@ -82,6 +89,7 @@ public class Character : Humanoid
                     if (interactedObject is DroppedItem)
                     {
                         //_inventory.Add((interactedObject as DroppedItem).getItem, (interactedObject as DroppedItem).amount);
+                        OnInterect.Invoke(interactedObject);
                         (interactedObject as DroppedItem).Gotten();
                     }
                     else
@@ -122,15 +130,15 @@ public class Character : Humanoid
             this.man = man;
         }
 
-        public abstract void Start();
-        public abstract void Update();
+        public virtual void Enter() { }
+        public virtual void Update() { }
     }
 
     public class NormalState : State
     {
         public NormalState(Character man) : base(man) { }
 
-        public override void Start()
+        public override void Enter()
         {
             base.man._cameraChanger?.ChangeToNormalCamera();
             base.man._animator.SetBool("IsAiming", false);
@@ -141,18 +149,25 @@ public class Character : Humanoid
             base.man._cameraRotater?.Rotate();
 
             // êiçsï˚å¸Ç…âÒì]
-            if (base.man._currentVelocity != Vector2.zero)
+            /*if (base.man._currentVelocity != Vector2.zero)
             {
                 base.man.transform.rotation = Quaternion.Lerp(base.man.transform.rotation, Quaternion.LookRotation(base.man._currentVelocity.ToVector3XZ()), 0.2f);
-            }
+            }*/
+
+            base.man._mover.Rotate(Camera.main.transform.forward.ToVector2XZ());
         }
+    }
+
+    public class WalkState : State
+    {
+        public WalkState(Character character) : base(character) { }
     }
 
     public class AimState : State
     {
         public AimState(Character man) : base(man) { }
 
-        public override void Start()
+        public override void Enter()
         {
             base.man._cameraChanger?.ChangeToAimCamera();
             base.man._animator.SetBool("IsAiming", true);

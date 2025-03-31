@@ -9,6 +9,9 @@ public class InputReceiver : MonoBehaviour
     Character _man;
 
     [SerializeField]
+    Mover _mover;
+
+    [SerializeField]
     Inventory _inventory;
 
     [SerializeField]
@@ -93,7 +96,7 @@ public class InputReceiver : MonoBehaviour
 
     private void Update()
     {
-        Vector3 vel = Quaternion.FromToRotation(Vector3.forward, Camera.main.transform.forward.RemoveY()) * _inputVelocity.ToVector3XZ();
-        _man.Move(vel.ToVector2XZ());
+        Vector3 vel = Quaternion.FromToRotation(this.transform.forward, Camera.main.transform.forward.RemoveY()) * _inputVelocity.ToVector3XZ();
+        _mover.StrafeMove(vel.ToVector2XZ());
     }
 }
