@@ -6,6 +6,9 @@ using UnityEngine;
 public class ItemData : ScriptableObject
 {
     [field: SerializeField]
+    public ItemType Type { get; private set; }
+
+    [field: SerializeField]
     public Sprite Image { get; private set; }
 
     [field: SerializeField]
@@ -38,5 +41,12 @@ public class ItemData : ScriptableObject
     public void SetImage(Sprite sprite)
     {
         Image = sprite;
+    }
+
+    public enum ItemType
+    {
+        Consumption,
+        MainWeapon,
+        SubWeapon
     }
 }

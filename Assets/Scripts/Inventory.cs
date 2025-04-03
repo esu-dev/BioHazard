@@ -43,6 +43,11 @@ public class Inventory : MonoBehaviour
         {
             _itemList[position.y][position.x] = new ItemSet(itemData);
             _itemList[position.y][position.x].amount = amount;
+
+            if (itemData.Type == ItemData.ItemType.MainWeapon)
+            {
+                RegisterMainWeapon(itemData);
+            }
         }
 
         /*for (int i = 1; i < itemData.Size; i++)
@@ -83,7 +88,7 @@ public class Inventory : MonoBehaviour
 
     private void RegisterMainWeapon(ItemData itemData)
     {
-        _mainWeapon = Instantiate(itemData.Prefab).AddComponent<Weapon>();
+        _mainWeapon = Instantiate(itemData.Prefab).GetComponent<Weapon>();
     }
 
     private void Start()

@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 public class InputReceiver : MonoBehaviour
 {
     [SerializeField]
-    Character _man;
+    Character _character;
 
     [SerializeField]
     Mover _mover;
@@ -51,17 +51,17 @@ public class InputReceiver : MonoBehaviour
     {
         if (callbackContext.performed)
         {
-            _inventory.EquippedWeapon?.Setup();
+            _character.SetUpWeapon();
         }
         else if (callbackContext.canceled)
         {
-            _inventory.EquippedWeapon?.Lower();
+            _character.LowerWeapon();
         }
     }
 
     private void OnInteract(InputAction.CallbackContext callbackContext)
     {
-        _man.Interact();
+        _character.Interact();
     }
 
     private void OnOpenInventory(InputAction.CallbackContext callbackContext)

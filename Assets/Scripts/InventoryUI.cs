@@ -56,11 +56,11 @@ public class InventoryUI : MonoBehaviour
                     _getItemImage.sprite = (InteractedObject as DroppedItem).getItem.Image;
                     _getItemImage.transform.position = _getItemImageMarker1.transform.position;
                     _getItemImage.transform.localScale = _getItemImageMarker1.transform.localScale;
-                    _getItemImage.transform.DOMove(_getItemImageMarker2.transform.position, 0.5f).onComplete = () => _eventTriggerProxy.gameObject.SetActive(true);
+                    _getItemImage.transform.DOMove(_getItemImageMarker2.transform.position, 0.5f).SetDelay(0.1f).onComplete = () => _eventTriggerProxy.gameObject.SetActive(true);
 
                     _getItemText.gameObject.SetActive(true);
                     _getItemText.text = (InteractedObject as DroppedItem).getItem.name + ((InteractedObject as DroppedItem).getItem.CanStack ? " x" + (InteractedObject as DroppedItem).amount : "");
-                    _getItemImage.GetComponent<TextMeshProUGUI>().color = _getItemImage.GetComponent<TextMeshProUGUI>().color.Transparency();
+                    _getItemImage.GetComponent<TextMeshProUGUI>().DOFade(0, 0);
                     _getItemImage.GetComponent<TextMeshProUGUI>().DOFade(1, 0.5f);
                 };
                 

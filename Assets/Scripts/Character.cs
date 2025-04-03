@@ -6,12 +6,6 @@ using UnityEngine.Events;
 public class Character : Humanoid
 {
     [SerializeField]
-    GameObject _cameraRoot;
-
-    [SerializeField]
-    GameObject _aimSphere;
-
-    [SerializeField]
     Inventory _inventory;
 
     [SerializeField]
@@ -24,7 +18,16 @@ public class Character : Humanoid
     CameraChanger _cameraChanger;
 
     [SerializeField]
+    HumanoidBoneTransformer _humanoidBoneTransformer;
+
+    [SerializeField]
     Rigidbody _rb;
+
+    [SerializeField]
+    GameObject _cameraRoot;
+
+    [SerializeField]
+    GameObject _aimSphere;
 
     [SerializeField]
     LayerMask _interactionLayer;
@@ -101,6 +104,21 @@ public class Character : Humanoid
         }
     }
 
+    public void SetUpWeapon()
+    {
+        if (_inventory.EquippedWeapon)
+        {
+            ChangeStateTo(aimState);
+            _inventory.EquippedWeapon.Setup();
+        }
+    }
+
+    public void LowerWeapon()
+    {
+        ChangeStateTo(normalState);
+        _inventory.EquippedWeapon?.Lower();
+    }
+
     private void Start()
     {
         normalState = new NormalState(this);
@@ -121,6 +139,11 @@ public class Character : Humanoid
         _animator.SetFloat("Speed", _currentVelocity.magnitude, base.SecondsToMaxSpeed, Time.deltaTime);
     }
 
+    private void LateUpdate()
+    {
+        _state.LateUpdate();
+    }
+
     public abstract class State
     {
         protected Character man;
@@ -132,6 +155,7 @@ public class Character : Humanoid
 
         public virtual void Enter() { }
         public virtual void Update() { }
+        public virtual void LateUpdate() { }
     }
 
     public class NormalState : State
@@ -181,6 +205,7 @@ public class Character : Humanoid
             //base.man.transform.rotation = Quaternion.Slerp(base.man.transform.rotation, Quaternion.LookRotation(base.man._cameraRoot.transform.forward.RemoveY()), 0.5f);
             base.man.transform.forward = Vector3.Slerp(base.man.transform.forward, (base.man._aimSphere.transform.position - base.man.transform.position).RemoveY(), base.man._aimSpeed * Time.deltaTime);
 
+            // AimSphereÇÃà⁄ìÆ
             Ray ray = Camera.main.ViewportPointToRay(Vector2.one / 2);
             //RaycastHit hit;
             if (Physics.Raycast(ray, out RaycastHit hit, base.man._aimDistance))
@@ -191,6 +216,12 @@ public class Character : Humanoid
             {
                 base.man._aimSphere.transform.position = Vector3.Lerp(base.man._aimSphere.transform.position, Camera.main.transform.position + Camera.main.transform.forward * base.man._aimDistance, base.man._aimSpeed * Time.deltaTime);
             }
+        }
+
+        public override void LateUpdate()
+        {
+            // òrÇÃå¸Ç´í≤êÆ
+            base.man._humanoidBoneTransformer.SetLookAtPosition(HumanBodyBones.RightHand, base.man._aimSphere.transform.position, HumanoidBoneTransformer.Axis.Y, HumanoidBoneTransformer.Axis._Z);
         }
     }
 }

@@ -34,6 +34,16 @@ public class AnimatorProxy : FlexUpdateMonoBehaviour
         animator.SetIKHintPositionWeight(hint, value);
     }
 
+    public void SetLookAtPosition(Vector3 lookAtPosition)
+    {
+        animator.SetLookAtPosition(lookAtPosition);
+    }
+
+    public void SetLookAtWeight(float weight, float bodyWeight, float headWeight)
+    {
+        animator.SetLookAtWeight(weight, bodyWeight, headWeight);
+    }
+
     public void CrossFadeInFixedTime(string stateName, float fixedTransitionDuration)
     {
         animator.CrossFadeInFixedTime(stateName, fixedTransitionDuration);

@@ -44,6 +44,17 @@ public class ItemImageCapture : MonoBehaviour
 
             RenderTexture.active = renderTexture;
             texture.ReadPixels(new Rect(0, 0, renderTexture.width, renderTexture.height), 0, 0);
+
+            // ÉKÉìÉ}ãtï‚ê≥
+            Color[] colors = texture.GetPixels();
+            for (int j = 0; j < colors.Length; j++)
+            {
+                colors[j].r = Mathf.LinearToGammaSpace(colors[j].r);
+                colors[j].g = Mathf.LinearToGammaSpace(colors[j].g);
+                colors[j].b = Mathf.LinearToGammaSpace(colors[j].b);
+            }
+            texture.SetPixels(colors);
+
             texture.Apply();
 
             string path = $"Assets/ItemImage/{itemData.Name}.png";

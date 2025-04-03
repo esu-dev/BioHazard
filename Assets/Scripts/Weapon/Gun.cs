@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Gun : Weapon
 {
+
     [SerializeField]
     protected AudioSource audioSource;
 
@@ -28,7 +29,7 @@ public class Gun : Weapon
 
     public override void Setup()
     {
-        base.character.ChangeStateTo(character.aimState);
+        /*base.character.ChangeStateTo(character.aimState);
 
         RigManager.WeightData weightData = new RigManager.WeightData();
         weightData.spine1 = 0.75f;
@@ -38,14 +39,14 @@ public class Gun : Weapon
         weightData.neck = 0.25f;
         weightData.head = 0.5f;
         weightData.rightHand = 1.0f;
-        base.rigManager.SetWeight(weightData);
+        base.rigManager.SetWeight(weightData);*/
 
         _isSettingUp = true;
     }
 
     public override void Lower()
     {
-        base.character.ChangeStateTo(character.normalState);
+        /*base.character.ChangeStateTo(character.normalState);
 
         RigManager.WeightData weightData = new RigManager.WeightData();
         weightData.spine1 = 0.0f;
@@ -55,7 +56,7 @@ public class Gun : Weapon
         weightData.neck = 0.0f;
         weightData.head = 0.0f;
         weightData.rightHand = 0.0f;
-        base.rigManager.SetWeight(weightData);
+        base.rigManager.SetWeight(weightData);*/
 
         _isSettingUp = false;
     }
