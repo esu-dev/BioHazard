@@ -7,6 +7,12 @@ public class Zombie : Humanoid
     [SerializeField]
     LayerMask _playerLayer;
 
+    [SerializeField]
+    Mover _mover;
+
+    [SerializeField]
+    HumanoidBoneTransformer _humanoidBoneTransformer;
+
     GameObject _target;
     State _state;
     AwakeState _awakeState;
@@ -40,6 +46,11 @@ public class Zombie : Humanoid
         _state.Start();
     }
 
+    private void OnAnimatorIK(int layerIndex)
+    {
+        _state.OnAnimatorIK();
+    }
+
     private void Start()
     {
         _awakeState = new AwakeState(this);
@@ -63,6 +74,7 @@ public class Zombie : Humanoid
             this.zombie = zombie;
         }
 
+        public virtual void OnAnimatorIK() { }
         public abstract void Start();
         public abstract void Update();
     }
@@ -92,6 +104,13 @@ public class Zombie : Humanoid
     {
         public TrackingState(Zombie zombie) : base(zombie) { }
 
+        public override void OnAnimatorIK()
+        {
+            // g‘Ì‚ğƒ^[ƒQƒbƒg‚Ì“ª‚ÉŒü‚¯‚é
+            base.zombie._humanoidBoneTransformer.SetLookAtWeight(1, 1, 1);
+            base.zombie._humanoidBoneTransformer.SetLookAtPosition(base.zombie._target.GetComponent<Animator>().GetBoneTransform(HumanBodyBones.Head).transform.position);
+        }
+
         public override void Start()
         {
             
@@ -99,12 +118,6 @@ public class Zombie : Humanoid
 
         public override void Update()
         {
-            /*// “G‚ğ’T‚·
-            if (Physics.BoxCast(base.zombie.transform.position.AddY(1), Vector3.one * 0.5f, base.zombie.transform.forward, out RaycastHit hit, Quaternion.identity, 10, base.zombie._playerLayer))
-            {
-                
-            }*/
-
             base.zombie.Move((base.zombie._target.transform.position - base.zombie.transform.position).ToVector2XZ());
 
             base.zombie._animator.SetFloat("Speed", base.zombie._currentVelocity.magnitude, base.zombie.SecondsToMaxSpeed, Time.deltaTime);
@@ -112,7 +125,7 @@ public class Zombie : Humanoid
             // is•ûŒü‚É‰ñ“]
             if (base.zombie._currentVelocity != Vector2.zero)
             {
-                base.zombie.transform.rotation = Quaternion.Lerp(base.zombie.transform.rotation, Quaternion.LookRotation(base.zombie._currentVelocity.ToVector3XZ()), base.zombie._AngularSpeed);
+                base.zombie._mover.Rotate((base.zombie._target.transform.position - base.zombie.transform.position).ToVector2XZ());
             }
         }
     }

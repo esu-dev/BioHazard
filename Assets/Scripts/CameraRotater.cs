@@ -13,20 +13,34 @@ public class CameraRotater : MonoBehaviour
     [SerializeField]
     GameObject _player;
 
+    bool _isEnabled = true;
     Vector2 _currentRotation;
     Quaternion _absoluteQuaternion;
 
     public void SetRotation(Vector2 rotation)
     {
-        _currentRotation = _rotationSpeed * rotation;
+        if (_isEnabled)
+        {
+            _currentRotation = _rotationSpeed * rotation;
+        }
     }
 
-    private void Update()
+    private void Start()
     {
-        //Cursor.lockState = CursorLockMode.Locked;
+        GameStateManager.Instance.OnPlayStateEnter.AddListener(() =>
+        {
+            _isEnabled = true;
+            this.enabled = true;
+        });
+
+        GameStateManager.Instance.OnPauseStateEnter.AddListener(() =>
+        {
+            _isEnabled = false;
+            this.enabled = false;
+        });
     }
 
-    public void Rotate()
+    public void Update()
     {
         _absoluteQuaternion = Quaternion.Euler(new Vector3(_absoluteQuaternion.eulerAngles.x - _currentRotation.y, _absoluteQuaternion.eulerAngles.y + _currentRotation.x, 0));
         _cameraRoot.transform.rotation = _absoluteQuaternion;

@@ -6,9 +6,6 @@ using UnityEngine;
 public class Inventory : MonoBehaviour
 {
     [SerializeField]
-    InventoryUI _inventoryUI;
-
-    [SerializeField]
     GameObject _handHolder;
 
     [SerializeField]
@@ -16,9 +13,6 @@ public class Inventory : MonoBehaviour
 
     [SerializeField]
     Character _character;
-
-    [SerializeField]
-    RigManager _rigManager;
 
     [SerializeField]
     Animator _animator;
@@ -77,7 +71,7 @@ public class Inventory : MonoBehaviour
         }
 
         EquippedWeapon = weapon ? weapon : _bareHands;
-        EquippedWeapon.Initialize(_character, _rigManager);
+        EquippedWeapon.Initialize(_character);
         _animator.SetInteger("Weapon", EquippedWeapon.GetWeaponNum());
 
         // •Ší‚ğè‚ÌˆÊ’u‚ÉˆÚ“®

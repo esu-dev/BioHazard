@@ -22,39 +22,21 @@ public class HumanoidBoneTransformer : MonoBehaviour
 
     public void SetLookAtPosition(HumanBodyBones humanBodyBones, Vector3 lookAtPosition, Axis lookAxis, Axis upAxis)
     {
-        /*int index;
-        if ((index = _lookAtPositionDataList.Select(x => x.humanBodyBones).ToList().IndexOf(humanBodyBones)) != -1)
-        {
-            _lookAtPositionDataList[index].humanBodyBones = humanBodyBones;
-            _lookAtPositionDataList[index].lookAtPosition = lookAtPosition;
-            _lookAtPositionDataList[index].axis = axis;
-        }
-        else
-        {
-            LookAtPositionData lookAtPositionData = new LookAtPositionData();
-            lookAtPositionData.humanBodyBones = humanBodyBones;
-            lookAtPositionData.lookAtPosition = lookAtPosition;
-            lookAtPositionData.axis = axis;
-
-            _lookAtPositionDataList.Add(lookAtPositionData);
-        }*/
-
         Transform bone = _animatorProxy.animator.GetBoneTransform(humanBodyBones);
         Vector3 direction = lookAtPosition - bone.position;
 
-        Vector3 upVector;
         switch (upAxis)
         {
+            case Axis.X_Reverse:
+                bone.transform.right = -Vector3.up;
+                break;
             case Axis.Y:
-                upVector = bone.up;
                 bone.up = Vector3.up;
                 break;
             case Axis.Z:
-                upVector = bone.forward;
                 bone.forward = Vector3.up;
                 break;
             default:
-                upVector = -bone.forward;
                 bone.forward = -Vector3.up;
                 break;
         }
@@ -118,16 +100,6 @@ public class HumanoidBoneTransformer : MonoBehaviour
         }*/
     }
 
-    public enum Axis
-    {
-        X,
-        _X,
-        Y,
-        _Y,
-        Z,
-        _Z
-    }
-
     class LookAtPositionData
     {
         public HumanBodyBones humanBodyBones;
@@ -135,4 +107,14 @@ public class HumanoidBoneTransformer : MonoBehaviour
         public Vector3 axis;
         public float weight;
     }
+}
+
+public enum Axis
+{
+    X,
+    X_Reverse,
+    Y,
+    Y_Reverse,
+    Z,
+    Z_Reverse
 }

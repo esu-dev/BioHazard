@@ -11,6 +11,9 @@ public class Mover : MonoBehaviour
     float _accelationTime;
 
     [SerializeField]
+    float _rotationSpeed;
+
+    [SerializeField]
     AnimatorProxy _animatorProxy;
 
     public void StrafeMove(Vector2 direction)
@@ -24,7 +27,7 @@ public class Mover : MonoBehaviour
 
     public void Rotate(Vector2 direction)
     {
-        this.transform.forward = direction.ToVector3XZ();
+        this.transform.forward = Vector3.Slerp(this.transform.forward, direction.ToVector3XZ(), _rotationSpeed * Time.deltaTime);
     }
 
     private void Update()

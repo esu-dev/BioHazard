@@ -39,6 +39,12 @@ public class Character : Humanoid
     [SerializeField]
     float _aimSpeed;
 
+    [SerializeField]
+    Axis _aimAxis;
+
+    [SerializeField]
+    Axis _upAxis;
+
 
     public UnityEvent<InteractedObject> OnInterect = new UnityEvent<InteractedObject>();
 
@@ -119,6 +125,11 @@ public class Character : Humanoid
         _inventory.EquippedWeapon?.Lower();
     }
 
+    private void OnAnimatorIK(int layerIndex)
+    {
+        _state.OnAnimatorIK();
+    }
+
     private void Start()
     {
         normalState = new NormalState(this);
@@ -153,6 +164,7 @@ public class Character : Humanoid
             this.man = man;
         }
 
+        public virtual void OnAnimatorIK() { }
         public virtual void Enter() { }
         public virtual void Update() { }
         public virtual void LateUpdate() { }
@@ -170,7 +182,7 @@ public class Character : Humanoid
 
         public override void Update()
         {
-            base.man._cameraRotater?.Rotate();
+            //base.man._cameraRotater?.Rotate();
 
             // is•ûŒü‚É‰ñ“]
             /*if (base.man._currentVelocity != Vector2.zero)
@@ -191,6 +203,13 @@ public class Character : Humanoid
     {
         public AimState(Character man) : base(man) { }
 
+        public override void OnAnimatorIK()
+        {
+            // g‘Ì‚ÌŒü‚«‚ğ’²®
+            base.man._humanoidBoneTransformer.SetLookAtWeight(0.75f, 1f, 1);
+            base.man._humanoidBoneTransformer.SetLookAtPosition(base.man._aimSphere.transform.position);
+        }
+
         public override void Enter()
         {
             base.man._cameraChanger?.ChangeToAimCamera();
@@ -199,7 +218,7 @@ public class Character : Humanoid
 
         public override void Update()
         {
-            base.man._cameraRotater?.Rotate();
+            //base.man._cameraRotater?.Rotate();
 
             // ƒJƒƒ‰•ûŒü‚ğŒü‚­‚æ‚¤‚É‰ñ“]
             //base.man.transform.rotation = Quaternion.Slerp(base.man.transform.rotation, Quaternion.LookRotation(base.man._cameraRoot.transform.forward.RemoveY()), 0.5f);
@@ -221,7 +240,7 @@ public class Character : Humanoid
         public override void LateUpdate()
         {
             // ˜r‚ÌŒü‚«’²®
-            base.man._humanoidBoneTransformer.SetLookAtPosition(HumanBodyBones.RightHand, base.man._aimSphere.transform.position, HumanoidBoneTransformer.Axis.Y, HumanoidBoneTransformer.Axis._Z);
+            base.man._humanoidBoneTransformer.SetLookAtPosition(HumanBodyBones.RightHand, base.man._aimSphere.transform.position, base.man._aimAxis, base.man._upAxis);
         }
     }
 }

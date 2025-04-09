@@ -5,7 +5,6 @@ using UnityEngine;
 public abstract class Weapon : Item
 {
     protected Character character;
-    protected RigManager rigManager;
 
     public abstract int GetWeaponNum();
     public abstract void Setup();
@@ -13,9 +12,8 @@ public abstract class Weapon : Item
     public abstract void Fire();
     
 
-    public void Initialize(Character character, RigManager rigManager)
+    public void Initialize(Character character)
     {
         this.character = character;
-        this.rigManager = rigManager;
     }
 }
