@@ -51,9 +51,11 @@ public class Character : Humanoid
 
     public State normalState { get; private set; }
     public State aimState { get; private set; }
+    State _walkState;
 
     State _state;
 
+    bool _isRun;
 
     // à»â∫Debugóp
     Vector3 _interactPosition;
@@ -76,6 +78,21 @@ public class Character : Humanoid
 
     }
 
+    public void Move(Vector2 dirOnCamCoord)
+    {
+        _state.Move(dirOnCamCoord);
+    }
+
+    public void Run()
+    {
+        _isRun = true;
+    }
+
+    public void StopRunning()
+    {
+        _isRun = false;
+    }
+
     public void ChangeStateTo(State state)
     {
         _state = state;
@@ -84,7 +101,7 @@ public class Character : Humanoid
 
     public void Interact()
     {
-        if (_state is NormalState)
+        if (_state is WalkState)
         {
             _interactPosition = this.transform.position;
 
@@ -121,7 +138,7 @@ public class Character : Humanoid
 
     public void LowerWeapon()
     {
-        ChangeStateTo(normalState);
+        ChangeStateTo(_walkState);
         _inventory.EquippedWeapon?.Lower();
     }
 
@@ -132,10 +149,10 @@ public class Character : Humanoid
 
     private void Start()
     {
-        normalState = new NormalState(this);
         aimState = new AimState(this);
+        _walkState = new WalkState(this);
 
-        ChangeStateTo(normalState);
+        ChangeStateTo(new WalkState(this));
     }
 
     private void Update()
@@ -157,17 +174,19 @@ public class Character : Humanoid
 
     public abstract class State
     {
-        protected Character man;
+        protected Character character;
 
         public State(Character man)
         {
-            this.man = man;
+            this.character = man;
         }
 
         public virtual void OnAnimatorIK() { }
         public virtual void Enter() { }
         public virtual void Update() { }
         public virtual void LateUpdate() { }
+
+        public virtual void Move(Vector2 direction) { }
     }
 
     public class NormalState : State
@@ -176,27 +195,72 @@ public class Character : Humanoid
 
         public override void Enter()
         {
-            base.man._cameraChanger?.ChangeToNormalCamera();
-            base.man._animator.SetBool("IsAiming", false);
+            base.character._cameraChanger?.ChangeToNormalCamera();
+            base.character._animator.SetBool("IsAiming", false);
         }
 
         public override void Update()
         {
-            //base.man._cameraRotater?.Rotate();
+            base.character._mover.Rotate(Camera.main.transform.forward.ToVector2XZ());
+        }
 
-            // êiçsï˚å¸Ç…âÒì]
-            /*if (base.man._currentVelocity != Vector2.zero)
-            {
-                base.man.transform.rotation = Quaternion.Lerp(base.man.transform.rotation, Quaternion.LookRotation(base.man._currentVelocity.ToVector3XZ()), 0.2f);
-            }*/
-
-            base.man._mover.Rotate(Camera.main.transform.forward.ToVector2XZ());
+        public override void Move(Vector2 direction)
+        {
+            
         }
     }
 
     public class WalkState : State
     {
         public WalkState(Character character) : base(character) { }
+
+        public override void Enter()
+        {
+            base.character._cameraChanger?.ChangeToNormalCamera();
+            base.character._animator.SetBool("IsAiming", false);
+        }
+
+        public override void Update()
+        {
+            base.character._mover.Rotate(Camera.main.transform.forward.ToVector2XZ());
+
+            if (base.character._isRun)
+            {
+                base.character.ChangeStateTo(new RunState(base.character));
+            }
+        }
+
+        public override void Move(Vector2 direction)
+        {
+            base.character._mover.StrafeMove((Quaternion.FromToRotation(base.character.transform.forward, Camera.main.transform.forward.RemoveY()) * direction.ToVector3XZ()).ToVector2XZ());
+        }
+    }
+
+    public class RunState : State
+    {
+        public RunState(Character character) : base(character) { }
+
+        public override void Enter()
+        {
+            base.character._cameraChanger?.ChangeToNormalCamera();
+            base.character._animator.SetBool("IsAiming", false);
+        }
+
+        public override void Update()
+        {
+            if (!base.character._isRun)
+            {
+                base.character.ChangeStateTo(base.character._walkState);
+            }
+        }
+
+        public override void Move(Vector2 direction)
+        {
+            Vector2 d = (Quaternion.AngleAxis(Camera.main.transform.rotation.eulerAngles.y, Vector3.up) * direction.ToVector3XZ()).ToVector2XZ();
+
+            base.character._mover.Move(d);
+            base.character._mover.Rotate(d);
+        }
     }
 
     public class AimState : State
@@ -206,41 +270,42 @@ public class Character : Humanoid
         public override void OnAnimatorIK()
         {
             // êgëÃÇÃå¸Ç´Çí≤êÆ
-            base.man._humanoidBoneTransformer.SetLookAtWeight(0.75f, 1f, 1);
-            base.man._humanoidBoneTransformer.SetLookAtPosition(base.man._aimSphere.transform.position);
+            base.character._humanoidBoneTransformer.SetLookAtWeight(0.75f, 1f, 1);
+            base.character._humanoidBoneTransformer.SetLookAtPosition(base.character._aimSphere.transform.position);
         }
 
         public override void Enter()
         {
-            base.man._cameraChanger?.ChangeToAimCamera();
-            base.man._animator.SetBool("IsAiming", true);
+            base.character._cameraChanger?.ChangeToAimCamera();
+            base.character._animator.SetBool("IsAiming", true);
         }
 
         public override void Update()
         {
-            //base.man._cameraRotater?.Rotate();
-
             // ÉJÉÅÉâï˚å¸Çå¸Ç≠ÇÊÇ§Ç…âÒì]
-            //base.man.transform.rotation = Quaternion.Slerp(base.man.transform.rotation, Quaternion.LookRotation(base.man._cameraRoot.transform.forward.RemoveY()), 0.5f);
-            base.man.transform.forward = Vector3.Slerp(base.man.transform.forward, (base.man._aimSphere.transform.position - base.man.transform.position).RemoveY(), base.man._aimSpeed * Time.deltaTime);
+            base.character.transform.forward = Vector3.Slerp(base.character.transform.forward, (base.character._aimSphere.transform.position - base.character.transform.position).RemoveY(), base.character._aimSpeed * Time.deltaTime);
 
             // AimSphereÇÃà⁄ìÆ
             Ray ray = Camera.main.ViewportPointToRay(Vector2.one / 2);
-            //RaycastHit hit;
-            if (Physics.Raycast(ray, out RaycastHit hit, base.man._aimDistance))
+            if (Physics.Raycast(ray, out RaycastHit hit, base.character._aimDistance))
             {
-                base.man._aimSphere.transform.position = Vector3.Lerp(base.man._aimSphere.transform.position, hit.point, base.man._aimSpeed * Time.deltaTime);
+                base.character._aimSphere.transform.position = Vector3.Lerp(base.character._aimSphere.transform.position, hit.point, base.character._aimSpeed * Time.deltaTime);
             }
             else
             {
-                base.man._aimSphere.transform.position = Vector3.Lerp(base.man._aimSphere.transform.position, Camera.main.transform.position + Camera.main.transform.forward * base.man._aimDistance, base.man._aimSpeed * Time.deltaTime);
+                base.character._aimSphere.transform.position = Vector3.Lerp(base.character._aimSphere.transform.position, Camera.main.transform.position + Camera.main.transform.forward * base.character._aimDistance, base.character._aimSpeed * Time.deltaTime);
             }
         }
 
         public override void LateUpdate()
         {
             // òrÇÃå¸Ç´í≤êÆ
-            base.man._humanoidBoneTransformer.SetLookAtPosition(HumanBodyBones.RightHand, base.man._aimSphere.transform.position, base.man._aimAxis, base.man._upAxis);
+            base.character._humanoidBoneTransformer.SetLookAtPosition(HumanBodyBones.RightHand, base.character._aimSphere.transform.position, base.character._aimAxis, base.character._upAxis);
+        }
+
+        public override void Move(Vector2 direction)
+        {
+            base.character._mover.StrafeMove((Quaternion.FromToRotation(base.character.transform.forward, Camera.main.transform.forward.RemoveY()) * direction.ToVector3XZ()).ToVector2XZ());
         }
     }
 }

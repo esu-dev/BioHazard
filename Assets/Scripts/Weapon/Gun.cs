@@ -42,12 +42,13 @@ public class Gun : Weapon
         {
             Debug.DrawRay(_firePos.transform.position, this.transform.forward * 10, Color.blue, 1f);
             Ray ray = new Ray(_firePos.transform.position, this.transform.forward);
-            if (Physics.Raycast(ray, out RaycastHit hit, _hitDistance))
+            if (Physics.Raycast(ray, out RaycastHit hit, _hitDistance, ~(1 << LayerConst.ZOMBIE)))
             {
                 Debug.Log(hit.transform.gameObject);
 
-                if (hit.transform.TryGetComponent(out Humanoid humanoid))
+                if (hit.transform.root.TryGetComponent(out AnimatedRagdoll animatedRagdoll) && animatedRagdoll.MainBodyGameObject.TryGetComponent(out Humanoid humanoid))
                 {
+                    humanoid?.React(ray.direction);
                     humanoid?.Damage(10);
                 }
             }

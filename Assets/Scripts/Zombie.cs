@@ -13,12 +13,58 @@ public class Zombie : Humanoid
     [SerializeField]
     HumanoidBoneTransformer _humanoidBoneTransformer;
 
+    [SerializeField]
+    AnimatorProxy _animatorProxy;
+
+    [SerializeField]
+    AnimatedRagdoll _animatedRagdoll;
+
+    [SerializeField]
+    AudioData _idleAudioData;
+
+    [SerializeField]
+    AudioData _bloodAudioData;
+
+    [SerializeField]
+    AudioPlayer _voiceAudioPlayer;
+
+    [SerializeField]
+    AudioSource _hitAudioSource;
+
     GameObject _target;
     State _state;
     AwakeState _awakeState;
     TrackingState _trackingState;
     AsleepState _asleepState;
+    DeathState _deathState;
 
+    bool _isReacting;
+    float _reactionTimer;
+
+    public override void React(Vector3 direction)
+    {
+        Vector3 d = this.transform.rotation * direction;
+
+        _animatorProxy.SetFloat(AnimatorParameterConst.ZombieAnimatorParameter.DIRECTION_X, d.x);
+        _animatorProxy.SetFloat(AnimatorParameterConst.ZombieAnimatorParameter.DIRECTION_Y, d.z);
+
+        // アニメーション再生
+        //_animatorProxy.SetTrigger(AnimatorParameterConst.ZombieAnimatorParameter.DAMAGE);
+
+        // Rigidbodyでリアクション
+        _animatedRagdoll.SetRagdollChild(HumanBodyBones.Spine);
+        //_animatedRagdoll.SetKinematic(HumanBodyBones.Head, true);
+        _animatedRagdoll.AddForce(HumanBodyBones.Head, 50 * direction.normalized);
+        _isReacting = true;
+        _reactionTimer = 0;
+
+        Debug.DrawRay(this.transform.position.AddY(1), direction.normalized, Color.yellow, 10 * Time.deltaTime);
+
+
+        // サウンド再生
+        _hitAudioSource.clip = _bloodAudioData._audioClips[Random.Range(0, _bloodAudioData._audioClips.Length)];
+        _hitAudioSource.Play();
+    }
 
     public override void Damage(int value)
     {
@@ -26,11 +72,12 @@ public class Zombie : Humanoid
         {
             base.HP -= value;
 
-            ExeHitAnimation();
+            //ExeHitAnimation();
 
             if (base.HP <= 0)
             {
                 base._animator.SetTrigger("Die");
+                ChangeStateTo(_deathState);
             }
         }
     }
@@ -42,8 +89,16 @@ public class Zombie : Humanoid
 
     private void ChangeStateTo(State state)
     {
+        _state.Exit();
         _state = state;
-        _state.Start();
+        _state.Enter();
+    }
+
+    void SetKinematicDefault()
+    {
+        _animatedRagdoll.SetKinematicAll();
+        _animatedRagdoll.SetRagdollChild(HumanBodyBones.RightUpperArm);
+        _animatedRagdoll.SetRagdollChild(HumanBodyBones.LeftUpperArm);
     }
 
     private void OnAnimatorIK(int layerIndex)
@@ -56,13 +111,39 @@ public class Zombie : Humanoid
         _awakeState = new AwakeState(this);
         _trackingState = new TrackingState(this);
         _asleepState = new AsleepState(this);
+        _deathState = new DeathState(this);
 
         _state = _awakeState;
+        _state.Enter();
+
+        // アニメーションの乱数を決定
+        _animatorProxy.SetInteger(AnimatorParameterConst.ZombieAnimatorParameter.WALK_TYPE, Random.Range(0, 2));
+        _animatorProxy.SetFloat(AnimatorParameterConst.ZombieAnimatorParameter.STRIDE, Random.Range(0.1f, 1f));
+
+
+        // Ragdollとの衝突を無視
+        Physics.IgnoreLayerCollision(this.gameObject.layer, LayerConst.RAGDOLL, true);
+
+
+        SetKinematicDefault();
     }
 
     private void Update()
     {
         _state.Update();
+
+        // 一定時間経過後にリアクション状態を解除する
+        if (_isReacting)
+        {
+            _reactionTimer += FlexDeltaTime;
+
+            if (_reactionTimer > 1f)
+            {
+                SetKinematicDefault();
+
+                _isReacting = false;
+            }
+        }
     }
 
     public abstract class State
@@ -75,17 +156,25 @@ public class Zombie : Humanoid
         }
 
         public virtual void OnAnimatorIK() { }
-        public abstract void Start();
+        public abstract void Enter();
+        public virtual void Exit() { }
         public abstract void Update();
+        public virtual void LateUpdate() { }
     }
 
     public class AwakeState : State
     {
         public AwakeState(Zombie zombie) : base(zombie) { }
 
-        public override void Start()
+        public override void Enter()
         {
-            
+            // Idleボイス再生
+            void PlayIdleVoice()
+            {
+                base.zombie._voiceAudioPlayer.Play(base.zombie._idleAudioData._audioClips[Random.Range(0, base.zombie._idleAudioData._audioClips.Length)], PlayIdleVoice, Random.Range(1f, 5f));
+            }
+
+            PlayIdleVoice();
         }
 
         public override void Update()
@@ -98,6 +187,11 @@ public class Zombie : Humanoid
                 base.zombie.ChangeStateTo(base.zombie._trackingState);
             }
         }
+
+        public override void Exit()
+        {
+            base.zombie._voiceAudioPlayer.Stop();
+        }
     }
 
     public class TrackingState : State
@@ -108,24 +202,27 @@ public class Zombie : Humanoid
         {
             // 身体をターゲットの頭に向ける
             base.zombie._humanoidBoneTransformer.SetLookAtWeight(1, 1, 1);
+            //base.zombie._humanoidBoneTransformer.SetLookAtWeight(1, 0, 1);
             base.zombie._humanoidBoneTransformer.SetLookAtPosition(base.zombie._target.GetComponent<Animator>().GetBoneTransform(HumanBodyBones.Head).transform.position);
         }
 
-        public override void Start()
+        public override void Enter()
         {
-            
+
         }
 
         public override void Update()
         {
-            base.zombie.Move((base.zombie._target.transform.position - base.zombie.transform.position).ToVector2XZ());
+            Vector2 direction = (base.zombie._target.transform.position - base.zombie.transform.position).ToVector2XZ();
 
-            base.zombie._animator.SetFloat("Speed", base.zombie._currentVelocity.magnitude, base.zombie.SecondsToMaxSpeed, Time.deltaTime);
+            base.zombie._mover.Move(direction);
+
+            //base.zombie._animator.SetFloat("Speed", base.zombie._currentVelocity.magnitude, base.zombie.SecondsToMaxSpeed, Time.deltaTime);
 
             // 進行方向に回転
-            if (base.zombie._currentVelocity != Vector2.zero)
+            //if (base.zombie._currentVelocity != Vector2.zero)
             {
-                base.zombie._mover.Rotate((base.zombie._target.transform.position - base.zombie.transform.position).ToVector2XZ());
+                base.zombie._mover.Rotate(direction);
             }
         }
     }
@@ -134,7 +231,7 @@ public class Zombie : Humanoid
     {
         public AsleepState(Zombie zombie) : base(zombie) { }
 
-        public override void Start()
+        public override void Enter()
         {
             
         }
@@ -142,6 +239,26 @@ public class Zombie : Humanoid
         public override void Update()
         {
             
+        }
+    }
+
+    public class DeathState : State
+    {
+        public DeathState(Zombie zombie) : base(zombie) { }
+
+        public override void Enter()
+        {
+
+        }
+
+        public override void Update()
+        {
+
+        }
+
+        public override void LateUpdate()
+        {
+
         }
     }
 }

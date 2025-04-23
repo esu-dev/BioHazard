@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 832580ef58a01ec44a9d927958b5baa5, type: 3}
+  m_Name: ZombieIdleAudioData
+  m_EditorClassIdentifier: 
+  <_audioClips>k__BackingField:
+  - {fileID: 8300000, guid: 90d342cf6f89440b9aa6c6ef4af6af88, type: 3}
+  - {fileID: 8300000, guid: 8c8b4012f639545b2a1f70a2082307b3, type: 3}
+  - {fileID: 8300000, guid: ad7b6eb3c723442b483e6b280fa02230, type: 3}
+  - {fileID: 8300000, guid: d254381ee39254b86b2ad79941106ced, type: 3}
+  - {fileID: 8300000, guid: 51481181258134093b3ac957766db260, type: 3}
+  - {fileID: 8300000, guid: c9bd2da8e9aef4886a02e17824e44eb1, type: 3}

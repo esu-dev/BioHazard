@@ -28,6 +28,18 @@ public class InputReceiver : MonoBehaviour
         _inputVelocity = callbackContext.ReadValue<Vector2>();
     }
 
+    private void OnRun(InputAction.CallbackContext callbackContext)
+    {
+        if (callbackContext.performed)
+        {
+            _character.Run();
+        }
+        else if (callbackContext.canceled)
+        {
+            _character.StopRunning();
+        }
+    }
+
     private void OnLook(InputAction.CallbackContext callbackContext)
     {
         _cameraRotater.SetRotation(callbackContext.ReadValue<Vector2>());
@@ -77,6 +89,9 @@ public class InputReceiver : MonoBehaviour
         inputAction.Player.Move.performed += OnMove;
         inputAction.Player.Move.canceled += OnMove;
 
+        inputAction.Player.Run.performed += OnRun;
+        inputAction.Player.Run.canceled += OnRun;
+
         inputAction.Player.Look.performed += OnLook;
         inputAction.Player.Look.canceled += OnLook;
 
@@ -97,7 +112,9 @@ public class InputReceiver : MonoBehaviour
 
     private void Update()
     {
-        Vector3 vel = Quaternion.FromToRotation(this.transform.forward, Camera.main.transform.forward.RemoveY()) * _inputVelocity.ToVector3XZ();
-        _mover.StrafeMove(vel.ToVector2XZ());
+        //Vector3 vel = Quaternion.FromToRotation(this.transform.forward, Camera.main.transform.forward.RemoveY()) * _inputVelocity.ToVector3XZ();
+        Vector3 vel = Camera.main.transform.rotation * _inputVelocity.ToVector3XZ();
+        //_character.Move(vel.ToVector2XZ());
+        _character.Move(_inputVelocity);
     }
 }

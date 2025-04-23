@@ -7,6 +7,12 @@ public class AnimatorProxy : FlexUpdateMonoBehaviour
     [field: SerializeField]
     public Animator animator { get; set; }
 
+
+    public void SetInteger(AnimatorParameterName name, int value)
+    {
+        animator.SetInteger(name.Name, value);
+    }
+
     public void SetFloat(AnimatorParameterName name, float value)
     {
         animator.SetFloat(name.Name, value);

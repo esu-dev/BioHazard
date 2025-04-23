@@ -10,6 +10,15 @@ public static class AnimatorParameterConst
         public static AnimatorParameterName VELOCITY_X = new AnimatorParameterName("VelocityX");
         public static AnimatorParameterName vELOCITY_Y = new AnimatorParameterName("VelocityY");
     }
+
+    public static class ZombieAnimatorParameter
+    {
+        public static AnimatorParameterName DIRECTION_X = new AnimatorParameterName("DirectionX");
+        public static AnimatorParameterName DIRECTION_Y = new AnimatorParameterName("DirectionY");
+        public static AnimatorParameterName DAMAGE = new AnimatorParameterName("Damage");
+        public static AnimatorParameterName STRIDE = new AnimatorParameterName("Stride");
+        public static AnimatorParameterName WALK_TYPE = new AnimatorParameterName("WalkType");
+    }
 }
 
 public class AnimatorParameterName
@@ -20,4 +29,10 @@ public class AnimatorParameterName
     {
         Name = name;
     }
+}
+
+public static class LayerConst
+{
+    public static int ZOMBIE = LayerMask.NameToLayer("Zombie");
+    public static int RAGDOLL = LayerMask.NameToLayer("Ragdoll");
 }

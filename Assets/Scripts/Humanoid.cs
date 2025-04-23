@@ -22,11 +22,7 @@ public abstract class Humanoid : FlexUpdateMonoBehaviour
     protected Vector2 _currentVelocity;
 
 
+    public virtual void React(Vector3 direction) { }
     public abstract void Damage(int value);
     protected abstract void ExeHitAnimation();
-
-    public void Move(Vector2 direction)
-    {
-        _currentVelocity = _speed * direction;
-    }
 }
