@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class Gun : Weapon
 {
+    [SerializeField]
+    int _maxBullerNum;
+
+    [SerializeField]
+    AnimatorProxy _animatorProxy;
 
     [SerializeField]
     protected AudioSource audioSource;
@@ -19,6 +24,9 @@ public class Gun : Weapon
 
     bool _isSettingUp;
     protected ParticleSystem _muzzleFlash;
+
+    int _bulletNum;
+
 
     public override int GetWeaponNum()
     {
@@ -38,6 +46,11 @@ public class Gun : Weapon
 
     public override void Fire()
     {
+        if (_bulletNum <= 0)
+        {
+            return;
+        }
+
         if (_isSettingUp)
         {
             Debug.DrawRay(_firePos.transform.position, this.transform.forward * 10, Color.blue, 1f);
@@ -52,6 +65,15 @@ public class Gun : Weapon
                     humanoid?.Damage(10);
                 }
             }
+
+            // 弾の消費
+            _bulletNum--;
+
+
+            // アニメーション
+            _animatorProxy.SetTrigger(AnimatorParameterConst.GunAnimatorParameter.FIRE);
+
+
             _muzzleFlash.gameObject.SetActive(true);
             _muzzleFlash.Play();
 
@@ -59,8 +81,15 @@ public class Gun : Weapon
         }
     }
 
+    public void Reload()
+    {
+        _bulletNum = _maxBullerNum;
+    }
+
     private void Start()
     {
+        _bulletNum = _maxBullerNum;
+
         _muzzleFlash = Instantiate(_muzzleFlashPrefab, _firePos.transform).GetComponent<ParticleSystem>();
     }
 }

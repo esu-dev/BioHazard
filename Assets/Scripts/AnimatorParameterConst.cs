@@ -19,6 +19,11 @@ public static class AnimatorParameterConst
         public static AnimatorParameterName STRIDE = new AnimatorParameterName("Stride");
         public static AnimatorParameterName WALK_TYPE = new AnimatorParameterName("WalkType");
     }
+
+    public static class GunAnimatorParameter
+    {
+        public static AnimatorParameterName FIRE = new AnimatorParameterName("Fire");
+    }
 }
 
 public class AnimatorParameterName

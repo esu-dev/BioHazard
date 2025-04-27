@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 1022245105230754636}
   - component: {fileID: 1022245105230754639}
   - component: {fileID: 1022245105230754638}
+  - component: {fileID: 3494991874541703448}
+  - component: {fileID: -4979707768035255700}
   m_Layer: 25
   m_Name: M1911
   m_TagString: Untagged
@@ -47,6 +49,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemData: {fileID: 11400000, guid: 1ed8302c72c71ad4798d4a21a0d813aa, type: 2}
+  _maxBullerNum: 15
+  _animatorProxy: {fileID: -4979707768035255700}
   audioSource: {fileID: 1022245105230754638}
   _firePos: {fileID: 3765485037021308914}
   _muzzleFlashPrefab: {fileID: 1782395880954752, guid: 3dd9cf2e209c504448f1c4c6835675cf,
@@ -148,6 +152,32 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &3494991874541703448
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1022245105230754637}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f074c9fc63c7ec439c143df7304c2c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <TimeScale>k__BackingField: 1
+--- !u!114 &-4979707768035255700
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1022245105230754637}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 75ff84a1842530443995689733423540, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <animator>k__BackingField: {fileID: 3216939929300328550}
 --- !u!1 &2942815755232059266
 GameObject:
   m_ObjectHideFlags: 0

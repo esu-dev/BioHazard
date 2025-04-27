@@ -50,6 +50,11 @@ public class InputReceiver : MonoBehaviour
         _inventory.EquippedWeapon?.Fire(); // Characterのメソッドを経由した方が良いのでは？
     }
 
+    private void OnReload(InputAction.CallbackContext callbackContext)
+    {
+        (_inventory.EquippedWeapon as Gun)?.Reload();
+    }
+
     private void OnEquipMain(InputAction.CallbackContext callbackContext)
     {
         _inventory.EquipMain();
@@ -96,6 +101,8 @@ public class InputReceiver : MonoBehaviour
         inputAction.Player.Look.canceled += OnLook;
 
         inputAction.Player.Fire.performed += OnFire;
+
+        inputAction.Player.Reload.performed += OnReload;
 
         inputAction.Player.EquipMain.performed += OnEquipMain;
         inputAction.Player.EquipSub.performed += OnEquipSub;

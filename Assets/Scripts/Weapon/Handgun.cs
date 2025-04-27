@@ -8,4 +8,6 @@ public class Handgun : Gun
     {
         return 2;
     }
+
+
 }

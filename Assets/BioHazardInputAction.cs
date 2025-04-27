@@ -64,6 +64,15 @@ public partial class @BioHazardInputAction: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
+                    ""name"": ""Reload"",
+                    ""type"": ""Button"",
+                    ""id"": ""745ced60-ec29-47dd-b16a-cd62547965d5"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
                     ""name"": ""EquipMain"",
                     ""type"": ""Button"",
                     ""id"": ""6bd5fe2e-5fd2-467b-8c02-54a33730af91"",
@@ -413,6 +422,17 @@ public partial class @BioHazardInputAction: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Run"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4a12cd47-3ed1-426d-b5fe-50911eb22d54"",
+                    ""path"": ""<Keyboard>/r"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Reload"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1004,6 +1024,7 @@ public partial class @BioHazardInputAction: IInputActionCollection2, IDisposable
         m_Player_Run = m_Player.FindAction("Run", throwIfNotFound: true);
         m_Player_Look = m_Player.FindAction("Look", throwIfNotFound: true);
         m_Player_Fire = m_Player.FindAction("Fire", throwIfNotFound: true);
+        m_Player_Reload = m_Player.FindAction("Reload", throwIfNotFound: true);
         m_Player_EquipMain = m_Player.FindAction("EquipMain", throwIfNotFound: true);
         m_Player_EquipSub = m_Player.FindAction("EquipSub", throwIfNotFound: true);
         m_Player_Setup = m_Player.FindAction("Setup", throwIfNotFound: true);
@@ -1087,6 +1108,7 @@ public partial class @BioHazardInputAction: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Run;
     private readonly InputAction m_Player_Look;
     private readonly InputAction m_Player_Fire;
+    private readonly InputAction m_Player_Reload;
     private readonly InputAction m_Player_EquipMain;
     private readonly InputAction m_Player_EquipSub;
     private readonly InputAction m_Player_Setup;
@@ -1101,6 +1123,7 @@ public partial class @BioHazardInputAction: IInputActionCollection2, IDisposable
         public InputAction @Run => m_Wrapper.m_Player_Run;
         public InputAction @Look => m_Wrapper.m_Player_Look;
         public InputAction @Fire => m_Wrapper.m_Player_Fire;
+        public InputAction @Reload => m_Wrapper.m_Player_Reload;
         public InputAction @EquipMain => m_Wrapper.m_Player_EquipMain;
         public InputAction @EquipSub => m_Wrapper.m_Player_EquipSub;
         public InputAction @Setup => m_Wrapper.m_Player_Setup;
@@ -1128,6 +1151,9 @@ public partial class @BioHazardInputAction: IInputActionCollection2, IDisposable
             @Fire.started += instance.OnFire;
             @Fire.performed += instance.OnFire;
             @Fire.canceled += instance.OnFire;
+            @Reload.started += instance.OnReload;
+            @Reload.performed += instance.OnReload;
+            @Reload.canceled += instance.OnReload;
             @EquipMain.started += instance.OnEquipMain;
             @EquipMain.performed += instance.OnEquipMain;
             @EquipMain.canceled += instance.OnEquipMain;
@@ -1162,6 +1188,9 @@ public partial class @BioHazardInputAction: IInputActionCollection2, IDisposable
             @Fire.started -= instance.OnFire;
             @Fire.performed -= instance.OnFire;
             @Fire.canceled -= instance.OnFire;
+            @Reload.started -= instance.OnReload;
+            @Reload.performed -= instance.OnReload;
+            @Reload.canceled -= instance.OnReload;
             @EquipMain.started -= instance.OnEquipMain;
             @EquipMain.performed -= instance.OnEquipMain;
             @EquipMain.canceled -= instance.OnEquipMain;
@@ -1366,6 +1395,7 @@ public partial class @BioHazardInputAction: IInputActionCollection2, IDisposable
         void OnRun(InputAction.CallbackContext context);
         void OnLook(InputAction.CallbackContext context);
         void OnFire(InputAction.CallbackContext context);
+        void OnReload(InputAction.CallbackContext context);
         void OnEquipMain(InputAction.CallbackContext context);
         void OnEquipSub(InputAction.CallbackContext context);
         void OnSetup(InputAction.CallbackContext context);
