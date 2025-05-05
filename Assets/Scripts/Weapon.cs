@@ -9,8 +9,6 @@ public abstract class Weapon : Item
     public abstract int GetWeaponNum();
     public abstract void Setup();
     public abstract void Lower();
-    public abstract void Fire();
-    
 
     public void Initialize(Character character)
     {

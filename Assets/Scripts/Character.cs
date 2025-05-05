@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -18,7 +19,13 @@ public class Character : Humanoid
     CameraChanger _cameraChanger;
 
     [SerializeField]
+    CameraProxy _cameraProxy;
+
+    [SerializeField]
     HumanoidBoneTransformer _humanoidBoneTransformer;
+
+    [SerializeField]
+    AnimatorProxy _animatorProxy;
 
     [SerializeField]
     Rigidbody _rb;
@@ -46,16 +53,23 @@ public class Character : Humanoid
     Axis _upAxis;
 
 
-    public UnityEvent<InteractedObject> OnInterect = new UnityEvent<InteractedObject>();
+    public UnityEvent<InteractedObject> OnInterectDroppedItem { get; private set; } = new UnityEvent<InteractedObject>();
+    public UnityEvent<bool> OnAimStateChange { get; private set; } = new UnityEvent<bool>();
+    public UnityEvent OnFocus { get; private set; } = new UnityEvent();
+    public UnityEvent OnWalk { get; private set; } = new UnityEvent();
+    public UnityEvent OnStand { get; private set; } = new UnityEvent();
 
 
     public State normalState { get; private set; }
-    public State aimState { get; private set; }
+    State _aimState;
     State _walkState;
+    BitedState _bitedState;
 
     State _state;
 
     bool _isRun;
+
+    InteractedObject _focused;
 
     // 以下Debug用
     Vector3 _interactPosition;
@@ -93,53 +107,64 @@ public class Character : Humanoid
         _isRun = false;
     }
 
+    public void Fire()
+    {
+        (_state as AimState)?.Fire();
+    }
+
+    public void Bited(GameObject target)
+    {
+        ChangeStateTo(_bitedState);
+        this.transform.forward = (target.transform.position - this.transform.position).RemoveY();
+    }
+
+    public void StopBited()
+    {
+        ChangeStateTo(_walkState);
+    }
+
     public void ChangeStateTo(State state)
     {
+        _state?.Exit();
         _state = state;
         _state.Enter();
     }
 
     public void Interact()
     {
+        if (!_focused)
+        {
+            return;
+        }
+
         if (_state is WalkState)
         {
-            _interactPosition = this.transform.position;
-
-            Collider[] colliders;
-            if ((colliders = Physics.OverlapCapsule(this.transform.position, this.transform.position.AddY(1.5f), 0.5f, _interactionLayer)).Length > 0)
+            if (_focused is DroppedItem)
             {
-                Debug.Log(colliders[0].gameObject);
-
-                if (colliders[0].gameObject.TryGetComponent(out InteractedObject interactedObject))
-                {
-                    if (interactedObject is DroppedItem)
-                    {
-                        //_inventory.Add((interactedObject as DroppedItem).getItem, (interactedObject as DroppedItem).amount);
-                        OnInterect.Invoke(interactedObject);
-                        (interactedObject as DroppedItem).Gotten();
-                    }
-                    else
-                    {
-                        interactedObject.Interacted();
-                    }
-                }
+                OnInterectDroppedItem.Invoke(_focused);
+                (_focused as DroppedItem).Gotten();
+            }
+            else
+            {
+                _focused.Interacted();
             }
         }
     }
 
     public void SetUpWeapon()
     {
-        if (_inventory.EquippedWeapon)
+        if (!(_state is BitedState) & _inventory.EquippedWeapon)
         {
-            ChangeStateTo(aimState);
-            _inventory.EquippedWeapon.Setup();
+            ChangeStateTo(_aimState);
         }
     }
 
     public void LowerWeapon()
     {
-        ChangeStateTo(_walkState);
-        _inventory.EquippedWeapon?.Lower();
+        if (!(_state is BitedState))
+        {
+            ChangeStateTo(_walkState);
+        }
     }
 
     private void OnAnimatorIK(int layerIndex)
@@ -149,15 +174,59 @@ public class Character : Humanoid
 
     private void Start()
     {
-        aimState = new AimState(this);
+        _aimState = new AimState(this);
         _walkState = new WalkState(this);
+        _bitedState = new BitedState(this);
 
-        ChangeStateTo(new WalkState(this));
+        ChangeStateTo(_walkState);
     }
 
     private void Update()
     {
         _state.Update();
+
+
+        _interactPosition = this.transform.position;
+
+        Collider[] colliders;
+
+        // 周囲のInterectedOjectのフォーカスを外す
+        if ((colliders = Physics.OverlapCapsule(this.transform.position, this.transform.position.AddY(1.5f), 2f, _interactionLayer)).Length > 0)
+        {
+            foreach (Collider collider in colliders)
+            {
+                collider.GetComponent<InteractedObject>()?.SetIsFocused(false);
+            }
+        }
+
+        // 一番近いInterectedObjectをフォーカス状態にする
+        if ((colliders = Physics.OverlapCapsule(this.transform.position, this.transform.position.AddY(1.5f), 0.5f, _interactionLayer)).Length > 0)
+        {
+            float[] distances = colliders.Select(x => Vector3.Distance(this.transform.position, x.transform.position)).ToArray();
+            int index = System.Array.IndexOf(distances, distances.Min());
+
+            if (colliders[index].gameObject.TryGetComponent(out InteractedObject interactedObject))
+            {
+                interactedObject.SetIsFocused(true);
+                _focused = interactedObject;
+            }
+        }
+        else
+        {
+            _focused = null;
+        }
+
+
+        // AimSphereの移動
+        Ray ray = Camera.main.ViewportPointToRay(Vector2.one / 2);
+        if (Physics.Raycast(ray, out RaycastHit hit, _aimDistance))
+        {
+            _aimSphere.transform.position = Vector3.Lerp(_aimSphere.transform.position, hit.point, _aimSpeed * Time.deltaTime);
+        }
+        else
+        {
+            _aimSphere.transform.position = Vector3.Lerp(_aimSphere.transform.position, Camera.main.transform.position + Camera.main.transform.forward * _aimDistance, _aimSpeed * Time.deltaTime);
+        }
     }
 
     private void FixedUpdate()
@@ -183,6 +252,7 @@ public class Character : Humanoid
 
         public virtual void OnAnimatorIK() { }
         public virtual void Enter() { }
+        public virtual void Exit() { }
         public virtual void Update() { }
         public virtual void LateUpdate() { }
 
@@ -217,7 +287,6 @@ public class Character : Humanoid
         public override void Enter()
         {
             base.character._cameraChanger?.ChangeToNormalCamera();
-            base.character._animator.SetBool("IsAiming", false);
         }
 
         public override void Update()
@@ -265,7 +334,21 @@ public class Character : Humanoid
 
     public class AimState : State
     {
-        public AimState(Character man) : base(man) { }
+        SubState _subState;
+        IdleState _idleState;
+        FocusState _focusState;
+        WalkState _walkState;
+
+        Character _character;
+
+        public AimState(Character character) : base(character)
+        {
+            _idleState = new IdleState(this);
+            _focusState = new FocusState(this);
+            _walkState = new WalkState(this);
+
+            _character = character;
+        }
 
         public override void OnAnimatorIK()
         {
@@ -278,6 +361,19 @@ public class Character : Humanoid
         {
             base.character._cameraChanger?.ChangeToAimCamera();
             base.character._animator.SetBool("IsAiming", true);
+            base.character._inventory.EquippedWeapon.Setup();
+
+            base.character.OnAimStateChange.Invoke(true);
+
+            ChangeSubstateTo(_idleState);
+        }
+
+        public override void Exit()
+        {
+            base.character._animator.SetBool("IsAiming", false);
+            base.character._inventory.EquippedWeapon?.Lower();
+
+            base.character.OnAimStateChange.Invoke(false);
         }
 
         public override void Update()
@@ -285,16 +381,22 @@ public class Character : Humanoid
             // カメラ方向を向くように回転
             base.character.transform.forward = Vector3.Slerp(base.character.transform.forward, (base.character._aimSphere.transform.position - base.character.transform.position).RemoveY(), base.character._aimSpeed * Time.deltaTime);
 
-            // AimSphereの移動
-            Ray ray = Camera.main.ViewportPointToRay(Vector2.one / 2);
-            if (Physics.Raycast(ray, out RaycastHit hit, base.character._aimDistance))
+
+            // 手ブレの変化
+            float s = base.character._cameraProxy.GetNoiseStrength();
+            float r;
+            if (Mathf.Abs(s - _subState.NoiseStrength) < Time.deltaTime)
             {
-                base.character._aimSphere.transform.position = Vector3.Lerp(base.character._aimSphere.transform.position, hit.point, base.character._aimSpeed * Time.deltaTime);
+                r = _subState.NoiseStrength;
             }
             else
             {
-                base.character._aimSphere.transform.position = Vector3.Lerp(base.character._aimSphere.transform.position, Camera.main.transform.position + Camera.main.transform.forward * base.character._aimDistance, base.character._aimSpeed * Time.deltaTime);
+                r = s + Mathf.Sign(_subState.NoiseStrength - s) * Time.deltaTime;
             }
+            base.character._cameraProxy.SetNoiseStrength(r);
+
+
+            _subState.Update();
         }
 
         public override void LateUpdate()
@@ -305,7 +407,134 @@ public class Character : Humanoid
 
         public override void Move(Vector2 direction)
         {
+            if (direction != Vector2.zero)
+            {
+                if (!(_subState is WalkState))
+                {
+                    ChangeSubstateTo(_walkState);
+                }
+            }
+            else if (_subState is WalkState)
+            {
+                ChangeSubstateTo(_idleState);
+            }
+
             base.character._mover.StrafeMove((Quaternion.FromToRotation(base.character.transform.forward, Camera.main.transform.forward.RemoveY()) * direction.ToVector3XZ()).ToVector2XZ());
+        }
+
+        public void Fire()
+        {
+            (base.character._inventory.EquippedWeapon as Gun)?.Fire(_subState is FocusState);
+        }
+
+        void ChangeSubstateTo(SubState subState)
+        {
+            _subState = subState;
+            _subState.Enter();
+        }
+
+
+        class SubState
+        {
+            protected AimState AimState;
+
+            public float NoiseStrength { get; protected set; }
+
+            public SubState(AimState state)
+            {
+                AimState = state;
+            }
+
+            public virtual void Enter() { }
+            public virtual void Update() { }
+        }
+
+        class IdleState : SubState
+        {
+            float _time;
+
+            public IdleState(AimState state) : base(state) { }
+
+            public override void Enter()
+            {
+                _time = 0;
+
+                base.AimState._character.OnStand.Invoke();
+
+                base.NoiseStrength = 1.0f;
+            }
+
+            public override void Update()
+            {
+                // 一定時間経過後遷移
+                _time += Time.deltaTime;
+                if (_time > (base.AimState._character._inventory.EquippedWeapon as Gun)?.FocusTime)
+                {
+                    // FocusStateに遷移
+                    base.AimState.ChangeSubstateTo(base.AimState._focusState);
+                }
+            }
+        }
+
+        class FocusState : SubState
+        {
+            public FocusState(AimState state) : base(state) { }
+
+
+            public override void Enter()
+            {
+                // レティクルを小さくする
+                base.AimState._character.OnFocus.Invoke();
+
+                // 手ブレを小さくする
+                base.NoiseStrength = 0.5f;
+            }
+
+            public override void Update()
+            {
+
+            }
+        }
+
+        class WalkState : SubState
+        {
+            public WalkState(AimState state) : base(state) { }
+
+            public override void Enter()
+            {
+                base.AimState._character.OnWalk.Invoke();
+
+                base.NoiseStrength = 1.5f;
+            }
+        }
+    }
+
+    public class BitedState : State
+    {
+        public BitedState(Character character) : base(character) { }
+
+        public override void Enter()
+        {
+            // カメラを切り替える
+            base.character._cameraChanger.ChangeToBitedCamera();
+
+            // カメラの回転を無効に
+            base.character._cameraRotater.SetIsEnabled(false);
+
+            // アニメーション再生
+            base.character._animatorProxy.SetTrigger(AnimatorParameterConst.PlayerAnimatorParameter.BITED);
+        }
+
+        public override void Exit()
+        {
+            // カメラを戻す
+            base.character._cameraChanger.ChangeToNormalCamera();
+
+            // カメラの回転を有効に
+            base.character._cameraRotater.SetIsEnabled(true);
+
+            // アニメーションを戻す
+            base.character._animatorProxy.SetTrigger(AnimatorParameterConst.PlayerAnimatorParameter.EXIT);
         }
     }
 }

@@ -10,23 +10,31 @@ public class Door : MonoBehaviour
     [SerializeField]
     float _limitAngle;
 
+    float _defaultY;
+    Vector3 _defaultForward;
+
     State _openState;
     State _closeState;
     State _currentState;
 
 
+    private void OnCollisionEnter(Collision collision)
+    {
+        ChangeStateTo(_openState);
+    }
+
     private void OnTriggerExit(Collider other)
     {
         ChangeStateTo(_closeState);
-
-        Debug.Log("Exit");
     }
 
-    public void Open()
+    public void Open(bool isPushed)
     {
         ChangeStateTo(_openState);
 
         // 少しドアが空くようにする
+        // トルクを加える
+        _rigidbody.AddTorque(new Vector3(0, isPushed ? 0.5f : -0.5f, 0), ForceMode.Impulse);
     }
 
     private void ChangeStateTo(State state)
@@ -40,14 +48,17 @@ public class Door : MonoBehaviour
     {
         _rigidbody.centerOfMass = _rigidbody.centerOfMass.RemoveX();
 
+        _defaultY = _rigidbody.rotation.eulerAngles.y;
+        _defaultForward = _rigidbody.transform.forward;
+
         _openState = new OpenState(this);
         _closeState = new CloseState(this);
-        ChangeStateTo(_openState);
+        ChangeStateTo(_closeState);
     }
 
     private void FixedUpdate()
     {
-        if (_rigidbody.rotation.eulerAngles.y > _limitAngle && _rigidbody.rotation.eulerAngles.y <= 180)
+        /*if (_rigidbody.rotation.eulerAngles.y > _limitAngle && _rigidbody.rotation.eulerAngles.y <= 180)
         {
             _rigidbody.angularVelocity = Vector3.zero;
             _rigidbody.rotation = Quaternion.Euler(_rigidbody.rotation.eulerAngles.x, _limitAngle, _rigidbody.rotation.eulerAngles.z);
@@ -56,7 +67,7 @@ public class Door : MonoBehaviour
         {
             _rigidbody.angularVelocity = Vector3.zero;
             _rigidbody.rotation = Quaternion.Euler(_rigidbody.rotation.eulerAngles.x, 360 - _limitAngle, _rigidbody.rotation.eulerAngles.z);
-        }
+        }*/
 
         _currentState.FixedUpdate();
     }
@@ -98,16 +109,17 @@ public class Door : MonoBehaviour
 
         public override void FixedUpdate()
         {
+            float angle = Vector3.SignedAngle(base.Door._rigidbody.transform.forward, base.Door._defaultForward, Vector3.up);
+
             // ドアが閉まっていいないならば
-            if (180 - Mathf.Abs(base.Door._rigidbody.rotation.eulerAngles.y - 180) > 1)
+            if (Mathf.Abs(angle) > 45f * Time.fixedDeltaTime)
             {
-                //base.Door._rigidbody.rotation = Quaternion.Euler(base.Door._rigidbody.rotation.eulerAngles.x, Mathf.Lerp(base.Door._rigidbody.rotation.eulerAngles.y, Mathf.FloorToInt(base.Door._rigidbody.rotation.eulerAngles.y / 180.0f) * 360, Time.deltaTime), base.Door._rigidbody.rotation.eulerAngles.z);
-                base.Door._rigidbody.rotation = Quaternion.Euler(base.Door._rigidbody.rotation.eulerAngles.x, base.Door._rigidbody.rotation.eulerAngles.y + (base.Door._rigidbody.rotation.eulerAngles.y < 180 ? -1 : 1), base.Door._rigidbody.rotation.eulerAngles.z);
+                base.Door._rigidbody.transform.forward = Quaternion.AngleAxis(Mathf.Sign(angle) * 45f * Time.fixedDeltaTime, Vector3.up) * base.Door._rigidbody.transform.forward;
             }
             else
             {
-                base.Door._rigidbody.rotation = Quaternion.Euler(base.Door._rigidbody.rotation.eulerAngles.x, 0, base.Door._rigidbody.rotation.eulerAngles.z);
-                //base.Door._rigidbody.constraints = RigidbodyConstraints.FreezeAll;
+                base.Door.transform.forward = base.Door._defaultForward;
+                base.Door._rigidbody.rotation = Quaternion.Euler(0, base.Door._defaultY, 0);
             }
         }
 

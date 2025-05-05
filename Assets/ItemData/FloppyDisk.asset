@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d9ecd6b8fc9f7143b58fca24624f9e9, type: 3}
   m_Name: FloppyDisk
   m_EditorClassIdentifier: 
+  <Type>k__BackingField: 0
   <Image>k__BackingField: {fileID: 21300000, guid: 818891bbdb45e7847a11dd1588cb357f,
     type: 3}
   <ID>k__BackingField: T002
@@ -21,4 +22,5 @@ MonoBehaviour:
   <Explanation>k__BackingField: This is Floppy Disk.
   <Prefab>k__BackingField: {fileID: 3255837668721067773, guid: e708374af0de9e14da7554eeda144fb0,
     type: 3}
+  DefaultPosition: {x: 0, y: 0, z: 0}
   DefaultRotation: {x: 352.21588, y: 280.61838, z: 90.04812}

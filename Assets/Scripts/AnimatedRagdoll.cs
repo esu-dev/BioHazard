@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class AnimatedRagdoll : MonoBehaviour
@@ -13,12 +15,41 @@ public class AnimatedRagdoll : MonoBehaviour
     [SerializeField]
     Animator _mainBodyAnimator;
 
+    float _weight = 1;
     GameObject _mainRoot;
 
+    List<BoneData> _boneDataList = new List<BoneData>();
 
     [field: SerializeField]
     public GameObject MainBodyGameObject { get; private set; }
 
+
+    public void SetWeight(float weight)
+    {
+        _weight = weight;
+    }
+
+    public void SetWeight(HumanBodyBones humanBodyBone, float weight)
+    {
+        Transform bone = _ragdollAnimator.GetBoneTransform(humanBodyBone);
+
+        SetWeight(bone, weight);
+    }
+
+    public void SetWeightChild(HumanBodyBones humanBodyBone, float weight)
+    {
+        SetWeightChild(_ragdollAnimator.GetBoneTransform(humanBodyBone), weight);
+        
+        void SetWeightChild(Transform bone, float weight)
+        {
+            SetWeight(bone, weight);
+
+            foreach (Transform child in bone)
+            {
+                SetWeightChild(child, weight);
+            }
+        }
+    }
 
     public void AddForce(HumanBodyBones humanBodyBones, Vector3 force)
     {
@@ -39,6 +70,54 @@ public class AnimatedRagdoll : MonoBehaviour
     public void SetKinematicAll()
     {
         SetKinematicChild(_ragdollRoot.transform, true);
+    }
+
+    public void SetIsTriggerAll()
+    {
+        SetIsTrigger(_ragdollRoot.transform);
+
+        void SetIsTrigger(Transform parent)
+        {
+            if (parent.TryGetComponent(out Collider collider))
+            {
+                collider.isTrigger = true;
+            }
+
+            foreach (Transform child in parent)
+            {
+                SetIsTrigger(child);
+            }
+        }
+    }
+
+    public void ExeActionToAllBone(Action<Transform> action)
+    {
+        ExeAction(_ragdollRoot.transform, action);
+
+        void ExeAction(Transform parent, Action<Transform> action)
+        {
+            action(parent);
+
+            foreach (Transform child in parent)
+            {
+                ExeAction(child, action);
+            }
+        }
+    }
+
+    void SetWeight(Transform bone, float weight)
+    {
+        if (_boneDataList.Any(x => x.boneTransform == bone))
+        {
+            _boneDataList.Find(x => x.boneTransform == bone).weight = weight;
+        }
+        else
+        {
+            BoneData boneData = new BoneData();
+            boneData.boneTransform = bone;
+            boneData.weight = weight;
+            _boneDataList.Add(boneData);
+        }
     }
 
     void SetKinematic(Transform ragdollBone, bool isKinematic)
@@ -67,8 +146,10 @@ public class AnimatedRagdoll : MonoBehaviour
 
     private void LateUpdate()
     {
-        // BoneがRagdollのBoneのTransformを参照する
+        // 本体の回転をコピー
+        this.transform.rotation = MainBodyGameObject.transform.rotation;
 
+        // BoneがRagdollのBoneのTransformを参照する
         Copy(_mainRoot.transform, _ragdollRoot.transform);
 
         void Copy(Transform bone, Transform ragdollBone)
@@ -81,11 +162,19 @@ public class AnimatedRagdoll : MonoBehaviour
                 // もしragdollのboneがkinematicでなかったらコピー
                 if (childRagdollBone.TryGetComponent(out Rigidbody rb) && !rb.isKinematic)
                 {
-                    childBone.localPosition = childRagdollBone.localPosition;
-                    childBone.rotation = childRagdollBone.rotation;
+                    // 本体にragdollの情報をコピー
+                    float weight = _weight;
+                    BoneData boneData = _boneDataList.Find(x => x.boneTransform == childRagdollBone);
+                    if (boneData != null)
+                    {
+                        weight = boneData.weight;
+                    }
+                    childBone.localPosition = Vector3.Lerp(childBone.localPosition, childRagdollBone.localPosition, weight);
+                    childBone.rotation = Quaternion.Lerp(childBone.rotation, childRagdollBone.rotation, weight);
                 }
                 else
                 {
+                    // ragdoll側にアニメーション情報をコピー
                     childRagdollBone.localPosition = childBone.localPosition;
                     childRagdollBone.rotation = childBone.rotation;
                 }
@@ -93,7 +182,11 @@ public class AnimatedRagdoll : MonoBehaviour
                 Copy(bone.GetChild(i), ragdollBone.transform.GetChild(i));
             }
         }
+    }
 
-        //_animator.GetBoneTransform(HumanBodyBones.Spine).localRotation = Quaternion.Euler(0, 0, -60);
+    class BoneData
+    {
+        public Transform boneTransform;
+        public float weight;
     }
 }

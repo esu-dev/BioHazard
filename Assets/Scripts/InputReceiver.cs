@@ -47,7 +47,7 @@ public class InputReceiver : MonoBehaviour
 
     private void OnFire(InputAction.CallbackContext callbackContext)
     {
-        _inventory.EquippedWeapon?.Fire(); // Characterのメソッドを経由した方が良いのでは？
+        _character.Fire();
     }
 
     private void OnReload(InputAction.CallbackContext callbackContext)

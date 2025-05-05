@@ -40,7 +40,7 @@ public class InventoryUI : MonoBehaviour
 
     public void Initialize()
     {
-        _character.OnInterect.AddListener(InteractedObject =>
+        _character.OnInterectDroppedItem.AddListener(InteractedObject =>
         {
             if (InteractedObject is DroppedItem)
             {

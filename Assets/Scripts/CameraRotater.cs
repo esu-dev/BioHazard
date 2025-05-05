@@ -17,6 +17,11 @@ public class CameraRotater : MonoBehaviour
     Vector2 _currentRotation;
     Quaternion _absoluteQuaternion;
 
+    public void SetIsEnabled(bool isEnabled)
+    {
+        _isEnabled = isEnabled;
+    }
+
     public void SetRotation(Vector2 rotation)
     {
         if (_isEnabled)

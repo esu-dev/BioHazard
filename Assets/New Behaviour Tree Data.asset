@@ -1,0 +1,197 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3adea866b1273d741ad3ba5c391cd77c, type: 3}
+  m_Name: New Behaviour Tree Data
+  m_EditorClassIdentifier: 
+  _nodeDataList:
+  - typeName: BehaviourTreeLib.RootNode
+    nodeTypeID: 0
+    id: root
+    parameterJSON: 
+    position:
+      serializedVersion: 2
+      x: 0
+      y: 100
+      width: 73
+      height: 77
+    state: 0
+    outputIDList:
+    - 8e563e6cf468492893a1ce68dc881bb3
+  - typeName: BehaviourTreeLib.Repeater
+    nodeTypeID: 4
+    id: 8e563e6cf468492893a1ce68dc881bb3
+    parameterJSON: 
+    position:
+      serializedVersion: 2
+      x: 146
+      y: 100
+      width: 131
+      height: 77
+    state: 0
+    outputIDList:
+    - 0eb71069499640c7a470b23436fc35b3
+  - typeName: BehaviourTreeLib.Sequencer
+    nodeTypeID: 2
+    id: 0eb71069499640c7a470b23436fc35b3
+    parameterJSON: 
+    position:
+      serializedVersion: 2
+      x: 339
+      y: 190
+      width: 131
+      height: 77
+    state: 0
+    outputIDList:
+    - 3f515e7193b64fa99f684cb2af563b31
+    - b70f25875363494bbaf432a349aeb5b4
+  - typeName: BehaviourTreeLib.ActionNode
+    nodeTypeID: 8
+    id: 3f515e7193b64fa99f684cb2af563b31
+    parameterJSON: '{"conditionNodeType":"","actionName":"WaitSecond","actionClassName":"CommonBehaviour+WaitSecond","inputs":[{"value":"1","variableName":"","isDynamic":false},{"value":"2","variableName":"","isDynamic":false}],"output":{"value":"","variableName":"","isDynamic":false},"inputs_int":[],"argument":[],"inputs_bool":[],"inputNames":[],"outputName":""}'
+    position:
+      serializedVersion: 2
+      x: 527
+      y: 100
+      width: 148
+      height: 132
+    state: 0
+    outputIDList: []
+  - typeName: BehaviourTreeLib.Selector
+    nodeTypeID: 1
+    id: b70f25875363494bbaf432a349aeb5b4
+    parameterJSON: 
+    position:
+      serializedVersion: 2
+      x: 373
+      y: 344
+      width: 131
+      height: 77
+    state: 0
+    outputIDList:
+    - 3c927c495a29473491213220f2db1ad5
+    - 443b76cb9072475abfe53a9020906358
+  - typeName: BehaviourTreeLib.ActionNode
+    nodeTypeID: 8
+    id: 3c927c495a29473491213220f2db1ad5
+    parameterJSON: '{"conditionNodeType":"","actionName":"SerachPlayerAction","actionClassName":"Zombie+SerachPlayerAction","inputs":[],"output":{"value":"","variableName":"","isDynamic":false},"inputs_int":[],"argument":[],"inputs_bool":[],"inputNames":[],"outputName":""}'
+    position:
+      serializedVersion: 2
+      x: 577
+      y: 267
+      width: 153
+      height: 92
+    state: 0
+    outputIDList: []
+  - typeName: BehaviourTreeLib.ActionNode
+    nodeTypeID: 8
+    id: 443b76cb9072475abfe53a9020906358
+    parameterJSON: '{"conditionNodeType":"","actionName":"WaitSecond","actionClassName":"CommonBehaviour+WaitSecond","inputs":[{"value":"1","variableName":"","isDynamic":false},{"value":"2","variableName":"","isDynamic":false}],"output":{"value":"","variableName":"","isDynamic":false},"inputs_int":[],"argument":[],"inputs_bool":[],"inputNames":[],"outputName":""}'
+    position:
+      serializedVersion: 2
+      x: 591
+      y: 421
+      width: 148
+      height: 132
+    state: 0
+    outputIDList: []
+  _nodeDataListForLoad:
+  - typeName: BehaviourTreeLib.RootNode
+    nodeTypeID: 0
+    id: root
+    parameterJSON: 
+    position:
+      serializedVersion: 2
+      x: 0
+      y: 100
+      width: 73
+      height: 77
+    state: 0
+    outputIDList:
+    - 8e563e6cf468492893a1ce68dc881bb3
+  - typeName: BehaviourTreeLib.Repeater
+    nodeTypeID: 4
+    id: 8e563e6cf468492893a1ce68dc881bb3
+    parameterJSON: 
+    position:
+      serializedVersion: 2
+      x: 146
+      y: 100
+      width: 131
+      height: 77
+    state: 0
+    outputIDList:
+    - 0eb71069499640c7a470b23436fc35b3
+  - typeName: BehaviourTreeLib.Sequencer
+    nodeTypeID: 2
+    id: 0eb71069499640c7a470b23436fc35b3
+    parameterJSON: 
+    position:
+      serializedVersion: 2
+      x: 339
+      y: 190
+      width: 131
+      height: 77
+    state: 0
+    outputIDList:
+    - 3f515e7193b64fa99f684cb2af563b31
+    - b70f25875363494bbaf432a349aeb5b4
+  - typeName: BehaviourTreeLib.ActionNode
+    nodeTypeID: 8
+    id: 3f515e7193b64fa99f684cb2af563b31
+    parameterJSON: '{"conditionNodeType":"","actionName":"WaitSecond","actionClassName":"CommonBehaviour+WaitSecond","inputs":[{"value":"1","variableName":"","isDynamic":false},{"value":"2","variableName":"","isDynamic":false}],"output":{"value":"","variableName":"","isDynamic":false},"inputs_int":[],"argument":[],"inputs_bool":[],"inputNames":[],"outputName":""}'
+    position:
+      serializedVersion: 2
+      x: 527
+      y: 100
+      width: 148
+      height: 132
+    state: 0
+    outputIDList: []
+  - typeName: BehaviourTreeLib.Selector
+    nodeTypeID: 1
+    id: b70f25875363494bbaf432a349aeb5b4
+    parameterJSON: 
+    position:
+      serializedVersion: 2
+      x: 373
+      y: 344
+      width: 131
+      height: 77
+    state: 0
+    outputIDList:
+    - 3c927c495a29473491213220f2db1ad5
+    - 443b76cb9072475abfe53a9020906358
+  - typeName: BehaviourTreeLib.ActionNode
+    nodeTypeID: 8
+    id: 3c927c495a29473491213220f2db1ad5
+    parameterJSON: '{"conditionNodeType":"","actionName":"SerachPlayerAction","actionClassName":"Zombie+SerachPlayerAction","inputs":[],"output":{"value":"","variableName":"","isDynamic":false},"inputs_int":[],"argument":[],"inputs_bool":[],"inputNames":[],"outputName":""}'
+    position:
+      serializedVersion: 2
+      x: 577
+      y: 267
+      width: 153
+      height: 92
+    state: 0
+    outputIDList: []
+  - typeName: BehaviourTreeLib.ActionNode
+    nodeTypeID: 8
+    id: 443b76cb9072475abfe53a9020906358
+    parameterJSON: '{"conditionNodeType":"","actionName":"WaitSecond","actionClassName":"CommonBehaviour+WaitSecond","inputs":[{"value":"1","variableName":"","isDynamic":false},{"value":"2","variableName":"","isDynamic":false}],"output":{"value":"","variableName":"","isDynamic":false},"inputs_int":[],"argument":[],"inputs_bool":[],"inputNames":[],"outputName":""}'
+    position:
+      serializedVersion: 2
+      x: 591
+      y: 421
+      width: 148
+      height: 132
+    state: 0
+    outputIDList: []
+  _blackbaordFieldTextList: []

@@ -18,9 +18,4 @@ public class BareHands : Weapon
     {
 
     }
-
-    public override void Fire()
-    {
-
-    }
 }

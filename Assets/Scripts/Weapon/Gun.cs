@@ -1,11 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Gun : Weapon
 {
     [SerializeField]
     int _maxBullerNum;
+
+    [SerializeField]
+    int _power;
 
     [SerializeField]
     AnimatorProxy _animatorProxy;
@@ -25,8 +29,12 @@ public class Gun : Weapon
     bool _isSettingUp;
     protected ParticleSystem _muzzleFlash;
 
-    int _bulletNum;
 
+    [field: SerializeField]
+    public float FocusTime { get; private set; }
+
+    public int BulletNum { get; private set; }
+    public UnityEvent<int> OnBulletNumChanged { get; private set; } = new UnityEvent<int>();
 
     public override int GetWeaponNum()
     {
@@ -44,30 +52,32 @@ public class Gun : Weapon
         _isSettingUp = false;
     }
 
-    public override void Fire()
+    public void Fire(bool _isFocused)
     {
-        if (_bulletNum <= 0)
+        if (BulletNum <= 0)
         {
             return;
         }
 
         if (_isSettingUp)
         {
-            Debug.DrawRay(_firePos.transform.position, this.transform.forward * 10, Color.blue, 1f);
-            Ray ray = new Ray(_firePos.transform.position, this.transform.forward);
+            Ray ray = Camera.main.ViewportPointToRay(new Vector2(0.5f, 0.5f));
+            Debug.DrawRay(ray.origin, ray.direction * 10, Color.blue, 1f);
             if (Physics.Raycast(ray, out RaycastHit hit, _hitDistance, ~(1 << LayerConst.ZOMBIE)))
             {
                 Debug.Log(hit.transform.gameObject);
 
-                if (hit.transform.root.TryGetComponent(out AnimatedRagdoll animatedRagdoll) && animatedRagdoll.MainBodyGameObject.TryGetComponent(out Humanoid humanoid))
+                AnimatedRagdoll animatedRagdoll = hit.transform.GetComponentInParent<AnimatedRagdoll>();
+                if (animatedRagdoll && animatedRagdoll.MainBodyGameObject.TryGetComponent(out Humanoid humanoid))
                 {
-                    humanoid?.React(ray.direction);
-                    humanoid?.Damage(10);
+                    humanoid?.React(this.transform.forward);
+                    humanoid?.Damage((int)(_power * Random.Range(0.9f, 1.1f)));
                 }
             }
 
             // 弾の消費
-            _bulletNum--;
+            BulletNum--;
+            OnBulletNumChanged.Invoke(BulletNum);
 
 
             // アニメーション
@@ -83,12 +93,13 @@ public class Gun : Weapon
 
     public void Reload()
     {
-        _bulletNum = _maxBullerNum;
+        BulletNum = _maxBullerNum;
+        OnBulletNumChanged.Invoke(BulletNum);
     }
 
     private void Start()
     {
-        _bulletNum = _maxBullerNum;
+        BulletNum = _maxBullerNum;
 
         _muzzleFlash = Instantiate(_muzzleFlashPrefab, _firePos.transform).GetComponent<ParticleSystem>();
     }

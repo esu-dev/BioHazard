@@ -16,7 +16,6 @@ public class DroppedItem : InteractedObject
 
     public void Gotten()
     {
-        Debug.Log("gotten");
-        this.gameObject.SetActive(false);
+        Destroy(this.gameObject);
     }
 }

@@ -56,6 +56,7 @@ MonoBehaviour:
   _muzzleFlashPrefab: {fileID: 1782395880954752, guid: 3dd9cf2e209c504448f1c4c6835675cf,
     type: 3}
   _hitDistance: 50
+  <FocusTime>k__BackingField: 1.5
 --- !u!82 &1022245105230754638
 AudioSource:
   m_ObjectHideFlags: 0
