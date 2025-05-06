@@ -58,12 +58,14 @@ public class Character : Humanoid
     public UnityEvent OnFocus { get; private set; } = new UnityEvent();
     public UnityEvent OnWalk { get; private set; } = new UnityEvent();
     public UnityEvent OnStand { get; private set; } = new UnityEvent();
+    public UnityEvent OnDie { get; private set; } = new UnityEvent();
 
 
     public State normalState { get; private set; }
     State _aimState;
     State _walkState;
     BitedState _bitedState;
+    DeadState _deadState;
 
     State _state;
 
@@ -84,12 +86,11 @@ public class Character : Humanoid
     {
         base.HP -= value;
 
-        ExeHitAnimation();
-    }
-
-    protected override void ExeHitAnimation()
-    {
-
+        if (base.HP <= 0)
+        {
+            // 死亡
+            ChangeStateTo(_deadState);
+        }
     }
 
     public void Move(Vector2 dirOnCamCoord)
@@ -120,7 +121,10 @@ public class Character : Humanoid
 
     public void StopBited()
     {
-        ChangeStateTo(_walkState);
+        if (_state is BitedState)
+        {
+            ChangeStateTo(_walkState);
+        }
     }
 
     public void ChangeStateTo(State state)
@@ -177,6 +181,7 @@ public class Character : Humanoid
         _aimState = new AimState(this);
         _walkState = new WalkState(this);
         _bitedState = new BitedState(this);
+        _deadState = new DeadState(this);
 
         ChangeStateTo(_walkState);
     }
@@ -231,8 +236,6 @@ public class Character : Humanoid
 
     private void FixedUpdate()
     {
-        //_rb.velocity = _currentVelocity.ToVector3XZ().AddY(_rb.velocity.y);
-        //_animator.SetFloat("Speed", _rb.velocity.magnitude, 0.1f, Time.deltaTime);
         _animator.SetFloat("Speed", _currentVelocity.magnitude, base.SecondsToMaxSpeed, Time.deltaTime);
     }
 
@@ -535,6 +538,19 @@ public class Character : Humanoid
 
             // アニメーションを戻す
             base.character._animatorProxy.SetTrigger(AnimatorParameterConst.PlayerAnimatorParameter.EXIT);
+        }
+    }
+
+    public class DeadState : State
+    {
+        public DeadState(Character character) : base(character) { }
+
+        public override void Enter()
+        {
+            // 死亡アニメーション
+            base.character._animatorProxy.SetTrigger(AnimatorParameterConst.PlayerAnimatorParameter.DIE);
+
+            base.character.OnDie.Invoke();
         }
     }
 }

@@ -19,9 +19,10 @@ namespace BehaviourTreeLib
 {
     public class BehaviourTreeEditorWindow : EditorWindow
     {
-        protected BehaviourTreeData _behaviourTreeData;
-
         public static BehaviourTreeEditorWindow instance;
+
+
+        protected BehaviourTreeData _behaviourTreeData;
 
         // EditWindowはコンパイル時にシリアライズされ一度情報が対比された後、復元される。
         // よってシリアライズされないstatic変数は破棄されてしまう。
@@ -61,7 +62,7 @@ namespace BehaviourTreeLib
             _behaviourTreeData.CopyDataForLoad(); // これを入れておかないと実行時以外でロードが機能しない
 
             // 任意のタイミングで更新してもらえるようにする
-            _behaviourTreeData.SetCallback(LoadOnlyState);
+            _behaviourTreeData.SetStateChangedCallback(LoadOnlyState);
 
             // ロード処理
             Load();
@@ -93,9 +94,14 @@ namespace BehaviourTreeLib
             if (_behaviourTreeData != null)
             {
                 _behaviourTreeData.CopyDataForLoad();
-                _behaviourTreeData.SetCallback(LoadOnlyState);
+                _behaviourTreeData.SetStateChangedCallback(LoadOnlyState);
                 Load();
             }
+        }
+
+        private void Update()
+        {
+            _behaviourTreeData.SetTarget(Selection.gameObjects[0]);
         }
 
         /// <summary>
@@ -297,11 +303,6 @@ namespace BehaviourTreeLib
 
             Debug.Log("BehaviourTreeのセーブが完了しました。");
         }
-
-        /*private void Update()
-        {
-            //Repaint();
-        }*/
 
         public class BehaviourTreeGraphView : GraphView
         {

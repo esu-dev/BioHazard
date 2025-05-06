@@ -4609,6 +4609,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3106036178746574240, guid: a91ffeed239367246902a952792c6a2c,
         type: 3}
+      propertyPath: _power
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 3106036178746574240, guid: a91ffeed239367246902a952792c6a2c,
+        type: 3}
       propertyPath: _collider
       value: 
       objectReference: {fileID: 8226860653050252563}
@@ -4622,11 +4627,52 @@ PrefabInstance:
       propertyPath: _animatedRagdoll
       value: 
       objectReference: {fileID: 1931596644041327661}
+    - target: {fileID: 3106036178746574240, guid: a91ffeed239367246902a952792c6a2c,
+        type: 3}
+      propertyPath: _behaviourTreeAI
+      value: 
+      objectReference: {fileID: 6279009890131690578}
+    - target: {fileID: 3106036178746574240, guid: a91ffeed239367246902a952792c6a2c,
+        type: 3}
+      propertyPath: _bloodEffectPrefabs.Array.size
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3106036178746574240, guid: a91ffeed239367246902a952792c6a2c,
+        type: 3}
+      propertyPath: _bloodEffectPrefabs.Array.data[0]
+      value: 
+      objectReference: {fileID: 100002, guid: f63523b97f3ae744b80a1e6ff09a4759, type: 3}
+    - target: {fileID: 3106036178746574240, guid: a91ffeed239367246902a952792c6a2c,
+        type: 3}
+      propertyPath: _bloodEffectPrefabs.Array.data[1]
+      value: 
+      objectReference: {fileID: 100002, guid: d4a66304d9609aa46b6b14565b193481, type: 3}
+    - target: {fileID: 3106036178746574240, guid: a91ffeed239367246902a952792c6a2c,
+        type: 3}
+      propertyPath: _bloodEffectPrefabs.Array.data[2]
+      value: 
+      objectReference: {fileID: 100006, guid: a489745b26b04fd42aa49e3b762b9ba0, type: 3}
+    - target: {fileID: 3106036178746574240, guid: a91ffeed239367246902a952792c6a2c,
+        type: 3}
+      propertyPath: _bloodEffectPrefabs.Array.data[3]
+      value: 
+      objectReference: {fileID: 100004, guid: eeb4d07e41727c043869c2d6fa268d11, type: 3}
+    - target: {fileID: 3106036178746574240, guid: a91ffeed239367246902a952792c6a2c,
+        type: 3}
+      propertyPath: _bloodEffectPrefabs.Array.data[4]
+      value: 
+      objectReference: {fileID: 100004, guid: 5aac6238f52473c4ab422c13d2511616, type: 3}
     - target: {fileID: 3106036178746574241, guid: a91ffeed239367246902a952792c6a2c,
         type: 3}
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3106036178746574247, guid: a91ffeed239367246902a952792c6a2c,
+        type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 13400000, guid: c47745f7d54e6574991e353abc13ec31,
+        type: 2}
     - target: {fileID: 4623807182893785002, guid: a91ffeed239367246902a952792c6a2c,
         type: 3}
       propertyPath: m_Layer
@@ -5092,6 +5138,19 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 6427047197002516660}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &6279009890131690578
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1905674797050511053}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b04a4d2bfdf02be4b93e842ec3e33bd2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _behaviourTreeData: {fileID: 11400000, guid: 32054ef38a140714ebb005a120c4e678, type: 2}
 --- !u!136 &8226860653050252563 stripped
 CapsuleCollider:
   m_CorrespondingSourceObject: {fileID: 3106036178746574247, guid: a91ffeed239367246902a952792c6a2c,

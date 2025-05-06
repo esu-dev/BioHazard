@@ -287,8 +287,9 @@ namespace BehaviourTreeLib
                             }
                             else if (field.FieldType.BaseType == typeof(InputBase))
                             {
-                                UnityEngine.Object input_Object = UnityEditor.AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(parameter.inputs[fieldCount].value);
-                                field.SetValue(typeObject, SetInputValue<UnityEngine.Object>(input_Object));
+                                Debug.Log("ScriptableObjectのロード方法を検討する");
+                                //UnityEngine.Object input_Object = UnityEditor.AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(parameter.inputs[fieldCount].value);
+                                //field.SetValue(typeObject, SetInputValue<UnityEngine.Object>(input_Object));
                             }
                             else
                             {
@@ -329,12 +330,16 @@ namespace BehaviourTreeLib
             _rootNode.StopEvaluate();
         }
 
+        /// <summary>
+        /// ノードの色を変更する
+        /// </summary>
+        /// <param name="node">プログラム上のノード</param>
         internal void ChangeColor(Node node)
         {
             NodeMatchingData nodeMatchingData = _nodeMatchingDataList.Find(x => x.node == node);
             string id = nodeMatchingData.id;
 
-            nodeMatchingData.tree.ChangeState(id, node.state);
+            nodeMatchingData.tree.ChangeState(id, node.state, this.gameObject);
         }
 
 
@@ -354,6 +359,10 @@ namespace BehaviourTreeLib
             public abstract void Evaluate(UnityAction<NodeState> callback);
             public abstract void StopEvaluate();
 
+            /// <summary>
+            /// ノードの状態を変更する
+            /// </summary>
+            /// <param name="state"></param>
             protected void ChangeState(NodeState state)
             {
                 this.state = state;
@@ -716,7 +725,7 @@ namespace BehaviourTreeLib
                     {
                         if (result == NodeState.True || result == NodeState.False)
                         {
-                            childNode.StopEvaluate();
+                            //childNode.StopEvaluate();
                             ChildEvaluate();
                         }
                     });
@@ -902,6 +911,9 @@ namespace BehaviourTreeLib
                     {
                         if (_currentState != NodeState.True)
                         {
+                            ChangeState(NodeState.Running);
+                            callback(NodeState.Running);
+
                             _childNode.Evaluate((NodeState result) =>
                             {
                                 ChangeState(result);

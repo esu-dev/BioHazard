@@ -11,6 +11,7 @@ public static class AnimatorParameterConst
         public static AnimatorParameterName vELOCITY_Y = new AnimatorParameterName("VelocityY");
         public static AnimatorParameterName BITED = new AnimatorParameterName("Bited");
         public static AnimatorParameterName EXIT = new AnimatorParameterName("Exit");
+        public static AnimatorParameterName DIE = new AnimatorParameterName("Die");
     }
 
     public static class ZombieAnimatorParameter
@@ -45,4 +46,5 @@ public static class LayerConst
     public static int PLAYER = LayerMask.NameToLayer("Player");
     public static int ZOMBIE = LayerMask.NameToLayer("Zombie");
     public static int RAGDOLL = LayerMask.NameToLayer("Ragdoll");
+    public static int INTERACTION = LayerMask.NameToLayer("Interaction");
 }

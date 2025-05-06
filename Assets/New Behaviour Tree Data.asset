@@ -25,84 +25,188 @@ MonoBehaviour:
       height: 77
     state: 0
     outputIDList:
-    - 8e563e6cf468492893a1ce68dc881bb3
+    - 3f5ac6a64c5149b99b57a8eb89f2bed4
+  - typeName: BehaviourTreeLib.Selector
+    nodeTypeID: 1
+    id: 3f5ac6a64c5149b99b57a8eb89f2bed4
+    parameterJSON: 
+    position:
+      serializedVersion: 2
+      x: 412
+      y: 260
+      width: 131
+      height: 77
+    state: 0
+    outputIDList:
+    - ee407e22d9f54e5c9b58d3a7351f14b7
+    - cdea190e006a44c89e1f13b67c552fc2
   - typeName: BehaviourTreeLib.Repeater
     nodeTypeID: 4
     id: 8e563e6cf468492893a1ce68dc881bb3
     parameterJSON: 
     position:
       serializedVersion: 2
-      x: 146
-      y: 100
+      x: 750
+      y: 392
       width: 131
       height: 77
     state: 0
     outputIDList:
-    - 0eb71069499640c7a470b23436fc35b3
-  - typeName: BehaviourTreeLib.Sequencer
-    nodeTypeID: 2
-    id: 0eb71069499640c7a470b23436fc35b3
+    - 14cad51fc3ec4a27843963ce066746be
+  - typeName: BehaviourTreeLib.Repeater
+    nodeTypeID: 4
+    id: 16c57592cc42478ba2eb2c8a56bc4e3f
     parameterJSON: 
     position:
       serializedVersion: 2
-      x: 339
-      y: 190
+      x: 1025
+      y: 118
       width: 131
       height: 77
     state: 0
     outputIDList:
-    - 3f515e7193b64fa99f684cb2af563b31
-    - b70f25875363494bbaf432a349aeb5b4
-  - typeName: BehaviourTreeLib.ActionNode
-    nodeTypeID: 8
-    id: 3f515e7193b64fa99f684cb2af563b31
-    parameterJSON: '{"conditionNodeType":"","actionName":"WaitSecond","actionClassName":"CommonBehaviour+WaitSecond","inputs":[{"value":"1","variableName":"","isDynamic":false},{"value":"2","variableName":"","isDynamic":false}],"output":{"value":"","variableName":"","isDynamic":false},"inputs_int":[],"argument":[],"inputs_bool":[],"inputNames":[],"outputName":""}'
-    position:
-      serializedVersion: 2
-      x: 527
-      y: 100
-      width: 148
-      height: 132
-    state: 0
-    outputIDList: []
-  - typeName: BehaviourTreeLib.Selector
-    nodeTypeID: 1
-    id: b70f25875363494bbaf432a349aeb5b4
+    - 7e5d5c0e393544f2bb430eb8fff33052
+  - typeName: BehaviourTreeLib.SimpleParallel
+    nodeTypeID: 3
+    id: 7e5d5c0e393544f2bb430eb8fff33052
     parameterJSON: 
     position:
       serializedVersion: 2
-      x: 373
-      y: 344
+      x: 1212
+      y: 118
       width: 131
       height: 77
     state: 0
     outputIDList:
-    - 3c927c495a29473491213220f2db1ad5
-    - 443b76cb9072475abfe53a9020906358
-  - typeName: BehaviourTreeLib.ActionNode
-    nodeTypeID: 8
-    id: 3c927c495a29473491213220f2db1ad5
-    parameterJSON: '{"conditionNodeType":"","actionName":"SerachPlayerAction","actionClassName":"Zombie+SerachPlayerAction","inputs":[],"output":{"value":"","variableName":"","isDynamic":false},"inputs_int":[],"argument":[],"inputs_bool":[],"inputNames":[],"outputName":""}'
+    - 3a0777053fac48b78a482067b0457102
+    - f28031f235bc4fd4b4e54ba52d66fba9
+  - typeName: BehaviourTreeLib.SimpleParallel
+    nodeTypeID: 3
+    id: 14cad51fc3ec4a27843963ce066746be
+    parameterJSON: 
     position:
       serializedVersion: 2
-      x: 577
-      y: 267
-      width: 153
+      x: 1025
+      y: 392
+      width: 131
+      height: 77
+    state: 0
+    outputIDList:
+    - 89d87e2e55c74c61a009a0b1a334ccf0
+    - 61925fd93b9e44598d307ec3d2ec6073
+  - typeName: BehaviourTreeLib.ActionNode
+    nodeTypeID: 8
+    id: 61925fd93b9e44598d307ec3d2ec6073
+    parameterJSON: '{"conditionNodeType":"","actionName":"RoamingAction","actionClassName":"Zombie+RoamingAction","inputs":[{"value":"1","variableName":"","isDynamic":false},{"value":"2","variableName":"","isDynamic":false}],"output":{"value":"","variableName":"","isDynamic":false},"inputs_int":[],"argument":[],"inputs_bool":[],"inputNames":[],"outputName":""}'
+    position:
+      serializedVersion: 2
+      x: 1278
+      y: 469
+      width: 130
       height: 92
     state: 0
     outputIDList: []
   - typeName: BehaviourTreeLib.ActionNode
     nodeTypeID: 8
-    id: 443b76cb9072475abfe53a9020906358
+    id: 89d87e2e55c74c61a009a0b1a334ccf0
+    parameterJSON: '{"conditionNodeType":"","actionName":"WaitSecond","actionClassName":"CommonBehaviour+WaitSecond","inputs":[{"value":"3","variableName":"","isDynamic":false},{"value":"3","variableName":"","isDynamic":false}],"output":{"value":"","variableName":"","isDynamic":false},"inputs_int":[],"argument":[],"inputs_bool":[],"inputNames":[],"outputName":""}'
+    position:
+      serializedVersion: 2
+      x: 1278
+      y: 304
+      width: 149
+      height: 132
+    state: 0
+    outputIDList: []
+  - typeName: BehaviourTreeLib.LoopConditionNode
+    nodeTypeID: 7
+    id: ee407e22d9f54e5c9b58d3a7351f14b7
+    parameterJSON: '{"conditionNodeType":"True","actionName":"IsPlayerSearched","actionClassName":"Zombie+IsPlayerSearched","inputs":[],"output":{"value":"","variableName":"","isDynamic":false},"inputs_int":[],"argument":[],"inputs_bool":[],"inputNames":[],"outputName":""}'
+    position:
+      serializedVersion: 2
+      x: 750
+      y: 118
+      width: 221
+      height: 112
+    state: 0
+    outputIDList:
+    - 75108a13073c403993a7a6f846a8baf4
+  - typeName: BehaviourTreeLib.ActionNode
+    nodeTypeID: 8
+    id: f28031f235bc4fd4b4e54ba52d66fba9
+    parameterJSON: '{"conditionNodeType":"","actionName":"TrackingAction","actionClassName":"Zombie+TrackingAction","inputs":[{"value":"1","variableName":"","isDynamic":false},{"value":"2","variableName":"","isDynamic":false}],"output":{"value":"","variableName":"","isDynamic":false},"inputs_int":[],"argument":[],"inputs_bool":[],"inputNames":[],"outputName":""}'
+    position:
+      serializedVersion: 2
+      x: 1462
+      y: 195
+      width: 130
+      height: 92
+    state: 0
+    outputIDList: []
+  - typeName: BehaviourTreeLib.ActionNode
+    nodeTypeID: 8
+    id: 3a0777053fac48b78a482067b0457102
     parameterJSON: '{"conditionNodeType":"","actionName":"WaitSecond","actionClassName":"CommonBehaviour+WaitSecond","inputs":[{"value":"1","variableName":"","isDynamic":false},{"value":"2","variableName":"","isDynamic":false}],"output":{"value":"","variableName":"","isDynamic":false},"inputs_int":[],"argument":[],"inputs_bool":[],"inputNames":[],"outputName":""}'
     position:
       serializedVersion: 2
-      x: 591
-      y: 421
+      x: 1462
+      y: 29
       width: 148
       height: 132
     state: 0
     outputIDList: []
+  - typeName: BehaviourTreeLib.ActionNode
+    nodeTypeID: 8
+    id: fd92be97b6a54cdf959f5c7920355633
+    parameterJSON: '{"conditionNodeType":"","actionName":"WaitOneFrame","actionClassName":"CommonBehaviour+WaitOneFrame","inputs":[],"output":{"value":"","variableName":"","isDynamic":false},"inputs_int":[],"argument":[],"inputs_bool":[],"inputNames":[],"outputName":""}'
+    position:
+      serializedVersion: 2
+      x: 1538
+      y: -157
+      width: 129
+      height: 92
+    state: 0
+    outputIDList: []
+  - typeName: BehaviourTreeLib.Sequencer
+    nodeTypeID: 2
+    id: 75108a13073c403993a7a6f846a8baf4
+    parameterJSON: 
+    position:
+      serializedVersion: 2
+      x: 942
+      y: -9
+      width: 131
+      height: 77
+    state: 0
+    outputIDList:
+    - 054dca1297234a71980cb3967f97156b
+    - 16c57592cc42478ba2eb2c8a56bc4e3f
+  - typeName: BehaviourTreeLib.LoopConditionNode
+    nodeTypeID: 7
+    id: 054dca1297234a71980cb3967f97156b
+    parameterJSON: '{"conditionNodeType":"True -> False","actionName":"IsTrackingState","actionClassName":"Zombie+IsTrackingState","inputs":[],"output":{"value":"","variableName":"","isDynamic":false},"inputs_int":[],"argument":[],"inputs_bool":[],"inputNames":[],"outputName":""}'
+    position:
+      serializedVersion: 2
+      x: 1200
+      y: -157
+      width: 256
+      height: 112
+    state: 0
+    outputIDList:
+    - fd92be97b6a54cdf959f5c7920355633
+  - typeName: BehaviourTreeLib.LoopConditionNode
+    nodeTypeID: 7
+    id: cdea190e006a44c89e1f13b67c552fc2
+    parameterJSON: '{"conditionNodeType":"Once","actionName":"IsRoamingState","actionClassName":"Zombie+IsRoamingState","inputs":[],"output":{"value":"","variableName":"","isDynamic":false},"inputs_int":[],"argument":[],"inputs_bool":[],"inputNames":[],"outputName":""}'
+    position:
+      serializedVersion: 2
+      x: 463
+      y: 392
+      width: 221
+      height: 112
+    state: 0
+    outputIDList:
+    - 8e563e6cf468492893a1ce68dc881bb3
   _nodeDataListForLoad:
   - typeName: BehaviourTreeLib.RootNode
     nodeTypeID: 0
@@ -116,82 +220,186 @@ MonoBehaviour:
       height: 77
     state: 0
     outputIDList:
-    - 8e563e6cf468492893a1ce68dc881bb3
+    - 3f5ac6a64c5149b99b57a8eb89f2bed4
+  - typeName: BehaviourTreeLib.Selector
+    nodeTypeID: 1
+    id: 3f5ac6a64c5149b99b57a8eb89f2bed4
+    parameterJSON: 
+    position:
+      serializedVersion: 2
+      x: 412
+      y: 260
+      width: 131
+      height: 77
+    state: 0
+    outputIDList:
+    - ee407e22d9f54e5c9b58d3a7351f14b7
+    - cdea190e006a44c89e1f13b67c552fc2
   - typeName: BehaviourTreeLib.Repeater
     nodeTypeID: 4
     id: 8e563e6cf468492893a1ce68dc881bb3
     parameterJSON: 
     position:
       serializedVersion: 2
-      x: 146
-      y: 100
+      x: 750
+      y: 392
       width: 131
       height: 77
     state: 0
     outputIDList:
-    - 0eb71069499640c7a470b23436fc35b3
-  - typeName: BehaviourTreeLib.Sequencer
-    nodeTypeID: 2
-    id: 0eb71069499640c7a470b23436fc35b3
+    - 14cad51fc3ec4a27843963ce066746be
+  - typeName: BehaviourTreeLib.Repeater
+    nodeTypeID: 4
+    id: 16c57592cc42478ba2eb2c8a56bc4e3f
     parameterJSON: 
     position:
       serializedVersion: 2
-      x: 339
-      y: 190
+      x: 1025
+      y: 118
       width: 131
       height: 77
     state: 0
     outputIDList:
-    - 3f515e7193b64fa99f684cb2af563b31
-    - b70f25875363494bbaf432a349aeb5b4
-  - typeName: BehaviourTreeLib.ActionNode
-    nodeTypeID: 8
-    id: 3f515e7193b64fa99f684cb2af563b31
-    parameterJSON: '{"conditionNodeType":"","actionName":"WaitSecond","actionClassName":"CommonBehaviour+WaitSecond","inputs":[{"value":"1","variableName":"","isDynamic":false},{"value":"2","variableName":"","isDynamic":false}],"output":{"value":"","variableName":"","isDynamic":false},"inputs_int":[],"argument":[],"inputs_bool":[],"inputNames":[],"outputName":""}'
-    position:
-      serializedVersion: 2
-      x: 527
-      y: 100
-      width: 148
-      height: 132
-    state: 0
-    outputIDList: []
-  - typeName: BehaviourTreeLib.Selector
-    nodeTypeID: 1
-    id: b70f25875363494bbaf432a349aeb5b4
+    - 7e5d5c0e393544f2bb430eb8fff33052
+  - typeName: BehaviourTreeLib.SimpleParallel
+    nodeTypeID: 3
+    id: 7e5d5c0e393544f2bb430eb8fff33052
     parameterJSON: 
     position:
       serializedVersion: 2
-      x: 373
-      y: 344
+      x: 1212
+      y: 118
       width: 131
       height: 77
     state: 0
     outputIDList:
-    - 3c927c495a29473491213220f2db1ad5
-    - 443b76cb9072475abfe53a9020906358
-  - typeName: BehaviourTreeLib.ActionNode
-    nodeTypeID: 8
-    id: 3c927c495a29473491213220f2db1ad5
-    parameterJSON: '{"conditionNodeType":"","actionName":"SerachPlayerAction","actionClassName":"Zombie+SerachPlayerAction","inputs":[],"output":{"value":"","variableName":"","isDynamic":false},"inputs_int":[],"argument":[],"inputs_bool":[],"inputNames":[],"outputName":""}'
+    - 3a0777053fac48b78a482067b0457102
+    - f28031f235bc4fd4b4e54ba52d66fba9
+  - typeName: BehaviourTreeLib.SimpleParallel
+    nodeTypeID: 3
+    id: 14cad51fc3ec4a27843963ce066746be
+    parameterJSON: 
     position:
       serializedVersion: 2
-      x: 577
-      y: 267
-      width: 153
+      x: 1025
+      y: 392
+      width: 131
+      height: 77
+    state: 0
+    outputIDList:
+    - 89d87e2e55c74c61a009a0b1a334ccf0
+    - 61925fd93b9e44598d307ec3d2ec6073
+  - typeName: BehaviourTreeLib.ActionNode
+    nodeTypeID: 8
+    id: 61925fd93b9e44598d307ec3d2ec6073
+    parameterJSON: '{"conditionNodeType":"","actionName":"RoamingAction","actionClassName":"Zombie+RoamingAction","inputs":[{"value":"1","variableName":"","isDynamic":false},{"value":"2","variableName":"","isDynamic":false}],"output":{"value":"","variableName":"","isDynamic":false},"inputs_int":[],"argument":[],"inputs_bool":[],"inputNames":[],"outputName":""}'
+    position:
+      serializedVersion: 2
+      x: 1278
+      y: 469
+      width: 130
       height: 92
     state: 0
     outputIDList: []
   - typeName: BehaviourTreeLib.ActionNode
     nodeTypeID: 8
-    id: 443b76cb9072475abfe53a9020906358
+    id: 89d87e2e55c74c61a009a0b1a334ccf0
+    parameterJSON: '{"conditionNodeType":"","actionName":"WaitSecond","actionClassName":"CommonBehaviour+WaitSecond","inputs":[{"value":"3","variableName":"","isDynamic":false},{"value":"3","variableName":"","isDynamic":false}],"output":{"value":"","variableName":"","isDynamic":false},"inputs_int":[],"argument":[],"inputs_bool":[],"inputNames":[],"outputName":""}'
+    position:
+      serializedVersion: 2
+      x: 1278
+      y: 304
+      width: 149
+      height: 132
+    state: 0
+    outputIDList: []
+  - typeName: BehaviourTreeLib.LoopConditionNode
+    nodeTypeID: 7
+    id: ee407e22d9f54e5c9b58d3a7351f14b7
+    parameterJSON: '{"conditionNodeType":"True","actionName":"IsPlayerSearched","actionClassName":"Zombie+IsPlayerSearched","inputs":[],"output":{"value":"","variableName":"","isDynamic":false},"inputs_int":[],"argument":[],"inputs_bool":[],"inputNames":[],"outputName":""}'
+    position:
+      serializedVersion: 2
+      x: 750
+      y: 118
+      width: 221
+      height: 112
+    state: 0
+    outputIDList:
+    - 75108a13073c403993a7a6f846a8baf4
+  - typeName: BehaviourTreeLib.ActionNode
+    nodeTypeID: 8
+    id: f28031f235bc4fd4b4e54ba52d66fba9
+    parameterJSON: '{"conditionNodeType":"","actionName":"TrackingAction","actionClassName":"Zombie+TrackingAction","inputs":[{"value":"1","variableName":"","isDynamic":false},{"value":"2","variableName":"","isDynamic":false}],"output":{"value":"","variableName":"","isDynamic":false},"inputs_int":[],"argument":[],"inputs_bool":[],"inputNames":[],"outputName":""}'
+    position:
+      serializedVersion: 2
+      x: 1462
+      y: 195
+      width: 130
+      height: 92
+    state: 0
+    outputIDList: []
+  - typeName: BehaviourTreeLib.ActionNode
+    nodeTypeID: 8
+    id: 3a0777053fac48b78a482067b0457102
     parameterJSON: '{"conditionNodeType":"","actionName":"WaitSecond","actionClassName":"CommonBehaviour+WaitSecond","inputs":[{"value":"1","variableName":"","isDynamic":false},{"value":"2","variableName":"","isDynamic":false}],"output":{"value":"","variableName":"","isDynamic":false},"inputs_int":[],"argument":[],"inputs_bool":[],"inputNames":[],"outputName":""}'
     position:
       serializedVersion: 2
-      x: 591
-      y: 421
+      x: 1462
+      y: 29
       width: 148
       height: 132
     state: 0
     outputIDList: []
+  - typeName: BehaviourTreeLib.ActionNode
+    nodeTypeID: 8
+    id: fd92be97b6a54cdf959f5c7920355633
+    parameterJSON: '{"conditionNodeType":"","actionName":"WaitOneFrame","actionClassName":"CommonBehaviour+WaitOneFrame","inputs":[],"output":{"value":"","variableName":"","isDynamic":false},"inputs_int":[],"argument":[],"inputs_bool":[],"inputNames":[],"outputName":""}'
+    position:
+      serializedVersion: 2
+      x: 1538
+      y: -157
+      width: 129
+      height: 92
+    state: 0
+    outputIDList: []
+  - typeName: BehaviourTreeLib.Sequencer
+    nodeTypeID: 2
+    id: 75108a13073c403993a7a6f846a8baf4
+    parameterJSON: 
+    position:
+      serializedVersion: 2
+      x: 942
+      y: -9
+      width: 131
+      height: 77
+    state: 0
+    outputIDList:
+    - 054dca1297234a71980cb3967f97156b
+    - 16c57592cc42478ba2eb2c8a56bc4e3f
+  - typeName: BehaviourTreeLib.LoopConditionNode
+    nodeTypeID: 7
+    id: 054dca1297234a71980cb3967f97156b
+    parameterJSON: '{"conditionNodeType":"True -> False","actionName":"IsTrackingState","actionClassName":"Zombie+IsTrackingState","inputs":[],"output":{"value":"","variableName":"","isDynamic":false},"inputs_int":[],"argument":[],"inputs_bool":[],"inputNames":[],"outputName":""}'
+    position:
+      serializedVersion: 2
+      x: 1200
+      y: -157
+      width: 256
+      height: 112
+    state: 0
+    outputIDList:
+    - fd92be97b6a54cdf959f5c7920355633
+  - typeName: BehaviourTreeLib.LoopConditionNode
+    nodeTypeID: 7
+    id: cdea190e006a44c89e1f13b67c552fc2
+    parameterJSON: '{"conditionNodeType":"Once","actionName":"IsRoamingState","actionClassName":"Zombie+IsRoamingState","inputs":[],"output":{"value":"","variableName":"","isDynamic":false},"inputs_int":[],"argument":[],"inputs_bool":[],"inputNames":[],"outputName":""}'
+    position:
+      serializedVersion: 2
+      x: 463
+      y: 392
+      width: 221
+      height: 112
+    state: 0
+    outputIDList:
+    - 8e563e6cf468492893a1ce68dc881bb3
   _blackbaordFieldTextList: []

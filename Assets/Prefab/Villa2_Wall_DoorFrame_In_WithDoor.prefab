@@ -111,7 +111,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b96ef1c5edead844bef7d21fa0c2c85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _interectedFunctions: []
   _isPushed: 1
+  _isLocked: 0
   _door: {fileID: 1689378564503575450}
 --- !u!135 &7037500042736120938
 SphereCollider:
@@ -256,7 +258,6 @@ GameObject:
   - component: {fileID: 1707085730140458414}
   - component: {fileID: 1707085730144994948}
   - component: {fileID: 1103074243974282625}
-  - component: {fileID: 926619167}
   m_Layer: 0
   m_Name: BrickHouse_Door_A
   m_TagString: Untagged
@@ -272,7 +273,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1707085730138319240}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 2.9639995, y: 0.012, z: 0}
+  m_LocalPosition: {x: 2.964001, y: 0.012, z: 0}
   m_LocalScale: {x: 1.13, y: 1.2425, z: 1.13}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -352,7 +353,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1707085730138319240}
   serializedVersion: 2
-  m_Mass: 1
+  m_Mass: 2
   m_Drag: 0
   m_AngularDrag: 0.05
   m_UseGravity: 0
@@ -360,23 +361,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 94
   m_CollisionDetection: 1
---- !u!114 &926619167
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1707085730138319240}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 60712065c855eae4b8bc184f6ca4c107, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _root: {fileID: 2127220547}
-  originalMesh: {fileID: 4300002, guid: d572f8603b910ec4d9fb73977ea98c06, type: 3}
-  doModify: 1
-  meshFilter: {fileID: 1707085730141515680}
-  meshCollider: {fileID: 0}
 --- !u!1 &3187797697555077879
 GameObject:
   m_ObjectHideFlags: 0
@@ -431,8 +415,8 @@ MonoBehaviour:
     actualSize: {x: 2.3200006, y: 3.2403457, z: 2.6216}
   meshModifiers:
   - {fileID: 880915478}
-  - {fileID: 926619167}
-  - {fileID: 2127220548}
+  - {fileID: 0}
+  - {fileID: 0}
   additionalScale: 1
   fitScale: 1
   frontEndPointConstructorSpace: {x: 55.680035, y: 0, z: -34.800026}
@@ -469,7 +453,6 @@ GameObject:
   - component: {fileID: 2681824455139829828}
   - component: {fileID: 3624097027538327550}
   - component: {fileID: 1071129599213314469}
-  - component: {fileID: 2127220548}
   m_Layer: 0
   m_Name: ExitDetecter
   m_TagString: Untagged
@@ -555,23 +538,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &2127220548
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5978596510315706801}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 60712065c855eae4b8bc184f6ca4c107, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _root: {fileID: 2127220547}
-  originalMesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
-  doModify: 1
-  meshFilter: {fileID: 2681824455139829828}
-  meshCollider: {fileID: 0}
 --- !u!1 &8077784554936057871
 GameObject:
   m_ObjectHideFlags: 0
@@ -618,7 +584,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b96ef1c5edead844bef7d21fa0c2c85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _interectedFunctions: []
   _isPushed: 0
+  _isLocked: 0
   _door: {fileID: 1689378564503575450}
 --- !u!135 &2894793585456524295
 SphereCollider:

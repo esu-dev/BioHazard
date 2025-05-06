@@ -20,11 +20,12 @@ public class Door : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        ChangeStateTo(_openState);
+        //ChangeStateTo(_openState);
     }
 
     private void OnTriggerExit(Collider other)
     {
+        Debug.Log("Exit");
         ChangeStateTo(_closeState);
     }
 
@@ -58,17 +59,6 @@ public class Door : MonoBehaviour
 
     private void FixedUpdate()
     {
-        /*if (_rigidbody.rotation.eulerAngles.y > _limitAngle && _rigidbody.rotation.eulerAngles.y <= 180)
-        {
-            _rigidbody.angularVelocity = Vector3.zero;
-            _rigidbody.rotation = Quaternion.Euler(_rigidbody.rotation.eulerAngles.x, _limitAngle, _rigidbody.rotation.eulerAngles.z);
-        }
-        else if (_rigidbody.rotation.eulerAngles.y < 360 - _limitAngle && _rigidbody.rotation.eulerAngles.y >= 180)
-        {
-            _rigidbody.angularVelocity = Vector3.zero;
-            _rigidbody.rotation = Quaternion.Euler(_rigidbody.rotation.eulerAngles.x, 360 - _limitAngle, _rigidbody.rotation.eulerAngles.z);
-        }*/
-
         _currentState.FixedUpdate();
     }
 
@@ -99,7 +89,8 @@ public class Door : MonoBehaviour
 
         public override void Enter()
         {
-
+            // âÒì]ÇÉçÉbÉN
+            base.Door._rigidbody.constraints = RigidbodyConstraints.FreezeAll;
         }
 
         public override void Exit()

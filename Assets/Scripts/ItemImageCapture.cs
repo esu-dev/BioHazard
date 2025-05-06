@@ -61,8 +61,9 @@ public class ItemImageCapture : MonoBehaviour
             byte[] bytes = texture.EncodeToPNG();
             File.WriteAllBytes(path, bytes);
 
+#if UNITY_EDITOR
             AssetDatabase.ImportAsset(path);
-
+#endif
 
             Debug.Log($"{_itemDatas[i].Name}‚ÌB‰e‚ªŠ®—¹‚µ‚Ü‚µ‚½B");
 

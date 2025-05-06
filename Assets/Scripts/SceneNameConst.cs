@@ -4,5 +4,8 @@ using UnityEngine;
 
 public static class SceneNameConst
 {
-    public static string GAME_SCENE = "GameScene";
+    public static string GAME = "GameScene";
+    public static string LOADING = "LoadingScene";
+    public static string GAME_OVER = "GameOverScene";
+    public static string END = "EndScene";
 }

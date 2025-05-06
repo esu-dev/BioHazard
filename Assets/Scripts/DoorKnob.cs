@@ -8,11 +8,20 @@ public class DoorKnob : InteractedObject
     bool _isPushed;
 
     [SerializeField]
+    bool _isLocked;
+
+    [SerializeField]
     Door _door;
 
     public override void Interacted()
     {
-        Debug.Log("Open");
+        if (_isLocked)
+        {
+            // テキスト表示
+            base._interectedFunctions[0].Invoke();
+
+            return;
+        }
 
         _door.Open(_isPushed);
     }

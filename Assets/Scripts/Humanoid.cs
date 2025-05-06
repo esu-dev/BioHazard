@@ -4,8 +4,8 @@ using UnityEngine;
 
 public abstract class Humanoid : FlexUpdateMonoBehaviour
 {
-    [SerializeField]
-    protected int HP;
+    [field: SerializeField]
+    public int HP { get; protected set; }
 
     [SerializeField]
     protected float _speed;
@@ -22,7 +22,5 @@ public abstract class Humanoid : FlexUpdateMonoBehaviour
     protected Vector2 _currentVelocity;
 
 
-    public virtual void React(Vector3 direction) { }
     public abstract void Damage(int value);
-    protected abstract void ExeHitAnimation();
 }

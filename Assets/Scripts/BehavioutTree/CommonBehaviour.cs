@@ -7,6 +7,36 @@ using BehaviourTreeLib;
 
 public class CommonBehaviour
 {
+    public class TestAction : ActionClass
+    {
+        float _counter;
+        UnityAction<NodeState> _callback;
+
+        public override void Start(UnityAction<NodeState> callback)
+        {
+            Debug.Log("Start");
+
+            _counter = 0;
+            _callback = callback;
+        }
+
+        public override void Update()
+        {
+            Debug.Log("Update");
+
+            _counter += Time.deltaTime;
+            if (_counter >= 3)
+            {
+                _callback(NodeState.True);
+            }
+        }
+
+        public override void Stop()
+        {
+            Debug.Log("Stop");
+        }
+    }
+
     public class WaitOneFrame : ActionClass
     {
         UnityAction<NodeState> _callback;
@@ -56,8 +86,6 @@ public class CommonBehaviour
             {
                 _callback(NodeState.True);
             }
-
-            Debug.Log("common");
         }
 
         public override void Stop()

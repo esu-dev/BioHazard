@@ -9,11 +9,6 @@ public class DroppedItem : InteractedObject
     [field: SerializeField] public int amount { get; private set; }
 
 
-    public override void Interacted()
-    {
-        // InventoryUI‚ð‹N“®
-    }
-
     public void Gotten()
     {
         Destroy(this.gameObject);

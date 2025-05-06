@@ -19,6 +19,7 @@ public class FadeUI : MonoBehaviour
         Tween t = DOVirtual.DelayedCall(time, null);
         this.GetComponent<Image>()?.DOFade(0, time);
         this.GetComponent<TextMeshProUGUI>()?.DOFade(0, time);
+        this.GetComponent<Outline>()?.DOFade(0, time);
 
         if (_applyToChild)
         {
@@ -43,6 +44,7 @@ public class FadeUI : MonoBehaviour
         Tween t = DOVirtual.DelayedCall(time, null);
         this.GetComponent<Image>()?.DOFade(_transparency / 255f, time);
         this.GetComponent<TextMeshProUGUI>()?.DOFade(_transparency / 255f, time);
+        this.GetComponent<Outline>()?.DOFade(_transparency / 255f, time);
 
         if (_applyToChild)
         {

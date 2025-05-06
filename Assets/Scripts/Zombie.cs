@@ -8,7 +8,13 @@ using BehaviourTreeLib;
 public class Zombie : Humanoid
 {
     [SerializeField]
+    int _power;
+
+    [SerializeField]
     LayerMask _playerLayer;
+
+    [SerializeField]
+    GameObject[] _bloodEffectPrefabs;
 
     [SerializeField]
     Mover _mover;
@@ -21,6 +27,9 @@ public class Zombie : Humanoid
 
     [SerializeField]
     AnimatedRagdoll _animatedRagdoll;
+
+    [SerializeField]
+    BehaviourTreeAI _behaviourTreeAI;
 
     [SerializeField]
     AudioData _idleAudioData;
@@ -43,6 +52,7 @@ public class Zombie : Humanoid
     GameObject _target;
     State _state;
     AwakeState _awakeState;
+    RoamingState _roamingState;
     TrackingState _trackingState;
     BitingState _bittingState;
     AsleepState _asleepState;
@@ -51,7 +61,12 @@ public class Zombie : Humanoid
     bool _isReacting;
     float _ragdollWeight;
 
-    public override void React(Vector3 direction)
+
+    /// <summary>
+    /// ヒットリアクション
+    /// </summary>
+    /// <param name="direction"></param>
+    public void React(GameObject bone, Vector3 direction)
     {
         Vector3 d = this.transform.rotation * direction;
 
@@ -72,8 +87,19 @@ public class Zombie : Humanoid
         // サウンド再生
         _hitAudioSource.clip = _bloodAudioData._audioClips[Random.Range(0, _bloodAudioData._audioClips.Length)];
         _hitAudioSource.Play();
+
+
+        // エフェクト表示
+        Instantiate(_bloodEffectPrefabs[Random.Range(0, _bloodEffectPrefabs.Length)], bone.transform.position, Quaternion.identity);
+
+        // 攻撃された方を向く
+
     }
 
+    /// <summary>
+    /// ダメージ処理
+    /// </summary>
+    /// <param name="value"></param>
     public override void Damage(int value)
     {
         if (base.HP > 0)
@@ -88,11 +114,6 @@ public class Zombie : Humanoid
                 ChangeStateTo(_deathState);
             }
         }
-    }
-
-    protected override void ExeHitAnimation()
-    {
-        base._animator.SetTrigger("Damage");
     }
 
     private void ChangeStateTo(State state)
@@ -122,12 +143,14 @@ public class Zombie : Humanoid
         base.HP = Random.Range(100, 200);
 
         _awakeState = new AwakeState(this);
+        _roamingState = new RoamingState(this);
         _trackingState = new TrackingState(this);
         _bittingState = new BitingState(this);
         _asleepState = new AsleepState(this);
         _deathState = new DeathState(this);
 
-        _state = _awakeState;
+        //_state = _awakeState;
+        _state = _roamingState;
         _state.Enter();
 
         // アニメーションの乱数を決定
@@ -142,7 +165,16 @@ public class Zombie : Humanoid
         SetKinematicDefault();
 
 
-        //_behaviourTreeAI.CreateTree();
+        // Idleボイス再生
+        void playIdleVoice()
+        {
+            _voiceAudioPlayer.Play(_idleAudioData._audioClips[Random.Range(0, _idleAudioData._audioClips.Length)], playIdleVoice, Random.Range(1f, 5f));
+        }
+
+        playIdleVoice();
+
+
+        _behaviourTreeAI.CreateTree();
     }
 
     private void Update()
@@ -174,9 +206,9 @@ public class Zombie : Humanoid
         }
 
         public virtual void OnAnimatorIK() { }
-        public abstract void Enter();
+        public virtual void Enter() { }
         public virtual void Exit() { }
-        public abstract void Update();
+        public virtual void Update() { }
         public virtual void LateUpdate() { }
     }
 
@@ -186,13 +218,7 @@ public class Zombie : Humanoid
 
         public override void Enter()
         {
-            // Idleボイス再生
-            void PlayIdleVoice()
-            {
-                base.zombie._voiceAudioPlayer.Play(base.zombie._idleAudioData._audioClips[Random.Range(0, base.zombie._idleAudioData._audioClips.Length)], PlayIdleVoice, Random.Range(1f, 5f));
-            }
-
-            PlayIdleVoice();
+            
         }
 
         public override void Update()
@@ -203,13 +229,21 @@ public class Zombie : Humanoid
             {
                 base.zombie._target = colliders[0].transform.gameObject;
 
-                base.zombie.ChangeStateTo(base.zombie._trackingState);
+                if (base.zombie._target.GetComponent<Character>().HP > 0)
+                {
+                    base.zombie.ChangeStateTo(base.zombie._trackingState);
+                }
             }
         }
+    }
 
-        public override void Exit()
+    public class RoamingState : State
+    {
+        public RoamingState(Zombie zombie) : base(zombie) { }
+
+        public override void Update()
         {
-            base.zombie._voiceAudioPlayer.Stop();
+            
         }
     }
 
@@ -232,12 +266,18 @@ public class Zombie : Humanoid
 
         public override void Update()
         {
-            Vector2 direction = (base.zombie._target.transform.position - base.zombie.transform.position).ToVector2XZ();
+            // ターゲットが死んでいれば、終了
+            if (base.zombie._target.GetComponent<Character>().HP <= 0)
+            {
+                base.zombie.ChangeStateTo(base.zombie._awakeState);
+            }
+
+            /*Vector2 direction = (base.zombie._target.transform.position - base.zombie.transform.position).ToVector2XZ();
 
             base.zombie._mover.Move(direction);
 
             // 回転
-            base.zombie._mover.Rotate(direction);
+            base.zombie._mover.Rotate(direction);*/
 
 
             // playerが近い場合、噛みつく
@@ -256,14 +296,10 @@ public class Zombie : Humanoid
 
     public class BitingState : State
     {
-        float _bitingTimer;
-
         public BitingState(Zombie zombie) : base(zombie) { }
 
         public override void Enter()
         {
-            _bitingTimer = 0;
-
             // アニメーション再生
             base.zombie._animatorProxy.SetTrigger(AnimatorParameterConst.ZombieAnimatorParameter.BITE);
 
@@ -273,13 +309,17 @@ public class Zombie : Humanoid
             // Playerとのあたり判定を無視
             Physics.IgnoreLayerCollision(LayerConst.PLAYER, LayerConst.ZOMBIE);
             Physics.IgnoreLayerCollision(LayerConst.PLAYER, LayerConst.RAGDOLL);
-        }
 
-        public override void Update()
-        {
-            _bitingTimer += base.zombie.FlexDeltaTime;
+            TimeScheduler.CreateSchedule(2f, () =>
+            {
+                // 戻る
+                base.zombie._animatorProxy.SetTrigger(AnimatorParameterConst.ZombieAnimatorParameter.EXIT);
 
-            if (_bitingTimer > 3f)
+                // ダメージ処理
+                base.zombie._target.GetComponent<Character>().Damage((int)(base.zombie._power * Random.Range(0.9f, 1.1f)));
+            });
+
+            TimeScheduler.CreateSchedule(3f, () =>
             {
                 // Playerとのあたり判定を戻す
                 Physics.IgnoreLayerCollision(LayerConst.PLAYER, LayerConst.ZOMBIE, false);
@@ -288,12 +328,7 @@ public class Zombie : Humanoid
                 base.zombie.ChangeStateTo(base.zombie._awakeState);
 
                 base.zombie._target.GetComponent<Character>().StopBited();
-            }
-            else if (_bitingTimer > 2f)
-            {
-                // 戻る
-                base.zombie._animatorProxy.SetTrigger(AnimatorParameterConst.ZombieAnimatorParameter.EXIT);
-            }
+            });
         }
     }
 
@@ -322,6 +357,9 @@ public class Zombie : Humanoid
             Destroy(base.zombie._rigidbody);
             Destroy(base.zombie._collider);
             Physics.IgnoreLayerCollision(LayerConst.RAGDOLL, LayerConst.PLAYER);
+
+            // ボイスを停止
+            base.zombie._voiceAudioPlayer.Stop();
         }
 
         public override void Update()
@@ -335,16 +373,56 @@ public class Zombie : Humanoid
         }
     }
 
+    public class IsPlayerSearched : ConditionClass
+    {
+        public override bool Execute()
+        {
+            Zombie zombie = base.TargetObject.GetComponent<Zombie>();
+
+            Collider[] colliders;
+            if ((colliders = Physics.OverlapBox(zombie.transform.position.AddY(1), Vector3.one * 3f, Quaternion.identity, zombie._playerLayer)).Length > 0)
+            {
+                zombie._target = colliders[0].transform.gameObject;
+
+                zombie.ChangeStateTo(zombie.GetComponent<Zombie>()._trackingState);
+
+                return true;
+            }
+
+            return false;
+        }
+    }
+
+    public class IsRoamingState : ConditionClass
+    {
+        public override bool Execute()
+        {
+            Zombie zombie = base.TargetObject.GetComponent<Zombie>();
+
+            return zombie._state is RoamingState;
+        }
+    }
+
+    public class IsTrackingState : ConditionClass
+    {
+        public override bool Execute()
+        {
+            Zombie zombie = base.TargetObject.GetComponent<Zombie>();
+
+            return zombie._state is TrackingState;
+        }
+    }
+
     public class SerachPlayerAction : ActionClass
     {
         public override void Start(UnityAction<NodeState> callback)
         {
             Zombie zombie = base.TargetObject.GetComponent<Zombie>();
 
-            // 敵を探す
-            if (Physics.BoxCast(base.TargetObject.transform.position.AddY(1), Vector3.one * 3f, base.TargetObject.transform.forward, out RaycastHit hit, Quaternion.identity, 10, zombie._playerLayer))
+            Collider[] colliders;
+            if ((colliders = Physics.OverlapBox(zombie.transform.position.AddY(1), Vector3.one * 3f, Quaternion.identity, zombie._playerLayer)).Length > 0)
             {
-                zombie._target = hit.transform.gameObject;
+                zombie._target = colliders[0].transform.gameObject;
 
                 zombie.ChangeStateTo(zombie.GetComponent<Zombie>()._trackingState);
 
@@ -358,6 +436,52 @@ public class Zombie : Humanoid
         public override void Update()
         {
 
+        }
+
+        public override void Stop()
+        {
+
+        }
+    }
+
+    public class RoamingAction : ActionClass
+    {
+        Vector2 _direction;
+        Zombie _zombie;
+
+        public override void Start(UnityAction<NodeState> callback)
+        {
+            _direction = (new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f))).normalized;
+            _zombie = base.TargetObject.GetComponent<Zombie>();
+        }
+
+        public override void Update()
+        {
+            _zombie._mover.Move(_direction);
+            _zombie._mover.Rotate(_direction);
+        }
+
+        public override void Stop()
+        {
+
+        }
+    }
+
+    public class TrackingAction : ActionClass
+    {
+        Vector2 _direction;
+        Zombie _zombie;
+
+        public override void Start(UnityAction<NodeState> callback)
+        {
+            _zombie = base.TargetObject.GetComponent<Zombie>();
+            _direction = (Quaternion.AngleAxis(Random.Range(-90f, 90f), Vector3.up) * (_zombie._target.transform.position - base.TargetObject.transform.position)).ToVector2XZ().normalized;
+        }
+
+        public override void Update()
+        {
+            _zombie._mover.Move(_direction);
+            _zombie._mover.Rotate(_direction);
         }
 
         public override void Stop()

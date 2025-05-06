@@ -50,6 +50,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemData: {fileID: 11400000, guid: 1ed8302c72c71ad4798d4a21a0d813aa, type: 2}
   _maxBullerNum: 15
+  _power: 40
   _animatorProxy: {fileID: -4979707768035255700}
   audioSource: {fileID: 1022245105230754638}
   _firePos: {fileID: 3765485037021308914}

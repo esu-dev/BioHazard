@@ -70,7 +70,7 @@ public class Gun : Weapon
                 AnimatedRagdoll animatedRagdoll = hit.transform.GetComponentInParent<AnimatedRagdoll>();
                 if (animatedRagdoll && animatedRagdoll.MainBodyGameObject.TryGetComponent(out Humanoid humanoid))
                 {
-                    humanoid?.React(this.transform.forward);
+                    (humanoid as Zombie)?.React(hit.transform.gameObject, this.transform.forward);
                     humanoid?.Damage((int)(_power * Random.Range(0.9f, 1.1f)));
                 }
             }

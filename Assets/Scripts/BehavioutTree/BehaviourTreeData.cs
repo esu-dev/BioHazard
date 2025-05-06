@@ -16,6 +16,7 @@ public class BehaviourTreeData : ScriptableObject
     [SerializeField]
     List<string> _blackbaordFieldTextList = new List<string>();
 
+    GameObject _target;
     UnityAction<NodeData> _stateChangeCallback;
 
     public List<NodeData> GetNodeDataListForLoad()
@@ -70,22 +71,37 @@ public class BehaviourTreeData : ScriptableObject
         FindNodeDataByID(fromID).outputIDList.Add(toID);
     }
 
-    public void SetCallback(UnityAction<NodeData> stateChangeCallback)
+    public void SetTarget(GameObject target)
+    {
+        _target = target;
+    }
+
+    /// <summary>
+    /// ノードの状態が変化したときのコールバックを設定する
+    /// </summary>
+    /// <param name="stateChangeCallback"></param>
+    public void SetStateChangedCallback(UnityAction<NodeData> stateChangeCallback)
     {
         _stateChangeCallback = (NodeData nodeData) => stateChangeCallback(nodeData);
     }
 
-    public void ChangeState(string id, NodeState state)
+    /// <summary>
+    /// ノードの状態を変更する
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="state"></param>
+    public void ChangeState(string id, NodeState state, GameObject target)
     {
-        NodeData nodeData = FindNodeDataByIDForLoad(id);
-        nodeData.state = state;
-
-        if (_stateChangeCallback == null)
+        // 対象のAIが異なる場合は何もしない
+        if (target != _target)
         {
             return;
         }
 
-        _stateChangeCallback(nodeData);
+        NodeData nodeData = FindNodeDataByIDForLoad(id);
+        nodeData.state = state;
+
+        _stateChangeCallback?.Invoke(nodeData);
     }
 
     public void ResetNodeStateDataForLoad()
