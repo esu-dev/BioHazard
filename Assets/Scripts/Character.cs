@@ -69,7 +69,7 @@ public class Character : Humanoid
 
     State _state;
 
-    bool _isRun;
+    bool _isRunning;
 
     InteractedObject _focused;
 
@@ -100,12 +100,12 @@ public class Character : Humanoid
 
     public void Run()
     {
-        _isRun = true;
+        _isRunning = true;
     }
 
     public void StopRunning()
     {
-        _isRun = false;
+        _isRunning = false;
     }
 
     public void Fire()
@@ -296,7 +296,7 @@ public class Character : Humanoid
         {
             base.character._mover.Rotate(Camera.main.transform.forward.ToVector2XZ());
 
-            if (base.character._isRun)
+            if (base.character._isRunning)
             {
                 base.character.ChangeStateTo(new RunState(base.character));
             }
@@ -320,7 +320,7 @@ public class Character : Humanoid
 
         public override void Update()
         {
-            if (!base.character._isRun)
+            if (!base.character._isRunning)
             {
                 base.character.ChangeStateTo(base.character._walkState);
             }

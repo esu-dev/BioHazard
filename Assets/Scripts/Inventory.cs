@@ -31,8 +31,9 @@ public class Inventory : MonoBehaviour
     Weapon _subWeapon;
 
 
-    public void Add(ItemData itemData, Vector2Int position, int amount = 1)
+    public bool Add(ItemData itemData, Vector2Int position, int amount = 1)
     {
+        // 空いているスロットなら
         if (_itemList[position.y][position.x] == null)
         {
             _itemList[position.y][position.x] = new ItemSet(itemData);
@@ -42,12 +43,13 @@ public class Inventory : MonoBehaviour
             {
                 RegisterMainWeapon(itemData);
             }
-        }
 
-        /*for (int i = 1; i < itemData.Size; i++)
+            return true;
+        }
+        else
         {
-            _itemList[position.y][position.x + i].itemData = itemData;
-        }*/
+            return false;
+        }
     }
 
     public void EquipMain()
@@ -58,6 +60,19 @@ public class Inventory : MonoBehaviour
     public void EquipSub()
     {
         Equip(_subWeapon);
+    }
+
+    public void Reload()
+    {
+        Gun gun = (EquippedWeapon as Gun);
+        int addedBulletNum = (int)(gun?.MaxBulletNum - gun?.BulletNum);
+        int havingBulletNum = CountItemNum(gun?.BulletItemData);
+        if (addedBulletNum > havingBulletNum)
+        {
+            addedBulletNum = havingBulletNum;
+        }
+        gun?.AddBullet(addedBulletNum);
+        Remove(gun?.BulletItemData, addedBulletNum);
     }
 
     private void Equip(Weapon weapon)
@@ -83,6 +98,74 @@ public class Inventory : MonoBehaviour
     private void RegisterMainWeapon(ItemData itemData)
     {
         _mainWeapon = Instantiate(itemData.Prefab).GetComponent<Weapon>();
+    }
+
+    /// <summary>
+    /// 任意のアイテムの数を数える
+    /// </summary>
+    /// <param name="itemData"></param>
+    /// <returns></returns>
+    public int CountItemNum(ItemData itemData)
+    {
+        int num = 0;
+
+        foreach (var list in _itemList)
+        {
+            foreach (ItemSet itemSet in list)
+            {
+                if (itemSet?.itemData == itemData)
+                {
+                    num += itemSet.amount;
+                }
+            }
+        }
+
+        return num;
+    }
+
+    /// <summary>
+    /// 任意のアイテムを取り除く
+    /// </summary>
+    /// <param name="itemData"></param>
+    void Remove(ItemData itemData, int amount)
+    {
+        int removingAmount = amount;
+
+        for (int y = 0; y < _itemList.Count(); y++)
+        {
+            for (int x = 0; x < _itemList[y].Count(); x++)
+            {
+                // 指定したアイテムのみ探索
+                if (_itemList[y][x]?.itemData != itemData)
+                {
+                    continue;
+                }
+
+                // 数が十分あるなら減らす
+                if (_itemList[y][x].amount > removingAmount)
+                {
+                    _itemList[y][x].amount -= removingAmount;
+                    return;
+                }
+
+
+                // 数が十分ない場合、あるだけ減らして探索を継続
+                removingAmount -= _itemList[y][x].amount;
+                _itemList[y][x].amount = 0;
+
+                // アイテムの削除
+                if (_itemList[y][x].amount == 0)
+                {
+                    _itemList[y][x] = null;
+                }
+
+                // 減らしきったら終了
+                if (removingAmount == 0)
+                {
+                    return;
+                }
+            }
+        }
     }
 
     private void Start()

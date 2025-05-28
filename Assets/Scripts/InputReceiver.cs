@@ -52,7 +52,7 @@ public class InputReceiver : MonoBehaviour
 
     private void OnReload(InputAction.CallbackContext callbackContext)
     {
-        (_inventory.EquippedWeapon as Gun)?.Reload();
+        _inventory.Reload();
     }
 
     private void OnEquipMain(InputAction.CallbackContext callbackContext)

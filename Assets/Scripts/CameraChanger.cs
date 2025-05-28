@@ -17,6 +17,11 @@ public class CameraChanger : MonoBehaviour
 
     public void ChangeToNormalCamera()
     {
+        if (_currentCamera == _normalCamera)
+        {
+            return;
+        }
+
         _currentCamera.SetActive(false);
         _currentCamera = _normalCamera;
         _currentCamera.SetActive(true);

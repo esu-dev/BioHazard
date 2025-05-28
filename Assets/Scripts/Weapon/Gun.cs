@@ -5,8 +5,8 @@ using UnityEngine.Events;
 
 public class Gun : Weapon
 {
-    [SerializeField]
-    int _maxBullerNum;
+    [field: SerializeField]
+    public int MaxBulletNum { get; private set; }
 
     [SerializeField]
     int _power;
@@ -33,8 +33,12 @@ public class Gun : Weapon
     [field: SerializeField]
     public float FocusTime { get; private set; }
 
+    [field: SerializeField]
+    public ItemData BulletItemData;
+
     public int BulletNum { get; private set; }
     public UnityEvent<int> OnBulletNumChanged { get; private set; } = new UnityEvent<int>();
+    public UnityEvent OnReloaded { get; private set; } = new UnityEvent();
 
     public override int GetWeaponNum()
     {
@@ -91,15 +95,16 @@ public class Gun : Weapon
         }
     }
 
-    public void Reload()
+    public void AddBullet(int num)
     {
-        BulletNum = _maxBullerNum;
+        BulletNum += num;
         OnBulletNumChanged.Invoke(BulletNum);
+        OnReloaded.Invoke();
     }
 
     private void Start()
     {
-        BulletNum = _maxBullerNum;
+        BulletNum = MaxBulletNum;
 
         _muzzleFlash = Instantiate(_muzzleFlashPrefab, _firePos.transform).GetComponent<ParticleSystem>();
     }

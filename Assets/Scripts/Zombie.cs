@@ -281,10 +281,14 @@ public class Zombie : Humanoid
 
 
             // player‚ª‹ß‚¢ê‡AŠš‚İ‚Â‚­
-            if (Vector3.Distance(base.zombie.transform.position, base.zombie._target.transform.position) <= 1.25f)
+            if (Vector3.Distance(base.zombie.transform.position, base.zombie._target.transform.position) <= 1.0f)
             {
-                // Šš‚İ‚Â‚­
-                base.zombie.ChangeStateTo(base.zombie._bittingState);
+                Ray ray = new Ray(base.zombie.transform.position.AddY(1), base.zombie._target.transform.position - base.zombie.transform.position);
+                if (Physics.Raycast(ray, 2f, 1 << LayerConst.PLAYER))
+                {
+                    // Šš‚İ‚Â‚­
+                    base.zombie.ChangeStateTo(base.zombie._bittingState);
+                }
             }
         }
 
@@ -380,13 +384,17 @@ public class Zombie : Humanoid
             Zombie zombie = base.TargetObject.GetComponent<Zombie>();
 
             Collider[] colliders;
-            if ((colliders = Physics.OverlapBox(zombie.transform.position.AddY(1), Vector3.one * 3f, Quaternion.identity, zombie._playerLayer)).Length > 0)
+            if ((colliders = Physics.OverlapBox(zombie.transform.position.AddY(1), new Vector3(5f, 1, 5f), zombie.transform.rotation, zombie._playerLayer)).Length > 0)
             {
-                zombie._target = colliders[0].transform.gameObject;
+                Ray ray = new Ray(zombie.transform.position.AddY(1), colliders[0].transform.position - zombie.transform.position);
+                if (Physics.Raycast(ray, out RaycastHit hit, 5f, 1 << LayerConst.PLAYER))
+                {
+                    zombie._target = hit.transform.gameObject;
 
-                zombie.ChangeStateTo(zombie.GetComponent<Zombie>()._trackingState);
+                    zombie.ChangeStateTo(zombie.GetComponent<Zombie>()._trackingState);
 
-                return true;
+                    return true;
+                }
             }
 
             return false;
@@ -420,7 +428,7 @@ public class Zombie : Humanoid
             Zombie zombie = base.TargetObject.GetComponent<Zombie>();
 
             Collider[] colliders;
-            if ((colliders = Physics.OverlapBox(zombie.transform.position.AddY(1), Vector3.one * 3f, Quaternion.identity, zombie._playerLayer)).Length > 0)
+            if ((colliders = Physics.OverlapBox(zombie.transform.position.AddY(1) + zombie.transform.forward * 3f / 2, Vector3.one * 3f, Quaternion.identity, zombie._playerLayer)).Length > 0)
             {
                 zombie._target = colliders[0].transform.gameObject;
 

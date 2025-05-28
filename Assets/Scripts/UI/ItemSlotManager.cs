@@ -145,11 +145,13 @@ public class ItemSlotManager : MonoBehaviour
                     base.ItemSlotManager._itemSlotList[i][j].SetClickEvent(() =>
                     {
                         Debug.Log(new Vector2Int(_j, _i));
-                        base.ItemSlotManager._inventory.Add(_itemData, new Vector2Int(_j, _i), _amount);
-                        base.ItemSlotManager._itemSlotList[_i][_j].SetImage(_itemData.Image);
-                        base.ItemSlotManager._holdItemImage.gameObject.SetActive(false);
-                        base.ItemSlotManager._holdItemImage.DOKill();
-                        _onComplete();
+                        if (base.ItemSlotManager._inventory.Add(_itemData, new Vector2Int(_j, _i), _amount))
+                        {
+                            base.ItemSlotManager._itemSlotList[_i][_j].SetImage(_itemData.Image);
+                            base.ItemSlotManager._holdItemImage.gameObject.SetActive(false);
+                            base.ItemSlotManager._holdItemImage.DOKill();
+                            _onComplete();
+                        }
                     });
                 }
             }
