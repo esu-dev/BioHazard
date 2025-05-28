@@ -295,6 +295,9 @@ public class Zombie : Humanoid
         public override void Exit()
         {
             base.zombie._mover.Move(Vector2.zero);
+
+            // 身体の向きを戻す
+            base.zombie._humanoidBoneTransformer.SetLookAtWeight(0, 1, 1);
         }
     }
 
@@ -304,6 +307,9 @@ public class Zombie : Humanoid
 
         public override void Enter()
         {
+            // プレイヤーの方を向く
+            base.zombie.transform.forward = (base.zombie._target.transform.position - base.zombie.transform.position).RemoveY();
+
             // アニメーション再生
             base.zombie._animatorProxy.SetTrigger(AnimatorParameterConst.ZombieAnimatorParameter.BITE);
 

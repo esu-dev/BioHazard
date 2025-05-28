@@ -22,11 +22,12 @@ public class SearchTextShower : SingletonMonoBehaviour<SearchTextShower>
 
     IEnumerator Show(string text)
     {
-        int length = 1;
+        _searchText.text = text;
+        _searchText.maxVisibleCharacters = 0;
 
-        while (length <= text.Length)
+        while (_searchText.maxVisibleCharacters < text.Length)
         {
-            _searchText.text = text.Substring(0, length++);
+            _searchText.maxVisibleCharacters++;
 
             yield return new WaitForSeconds(0.025f);
         }
