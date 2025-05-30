@@ -18,15 +18,35 @@ public class Door : MonoBehaviour
     State _currentState;
 
 
+    [field: SerializeField]
+    public bool _isLocked_push { get; private set; }
+
+    [field: SerializeField]
+    public bool _isLocked_pull { get; private set; }
+
+
+    // ï®óùìIÇ»ãììÆÇ∂Ç·Ç»Ç¢Ç©ÇÁîΩâûÇµÇ»Ç¢ÅH
     private void OnCollisionEnter(Collision collision)
     {
-        //ChangeStateTo(_openState);
+        
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (!_isLocked_push && !_isLocked_pull)
+        {
+            Debug.Log("Open");
+            ChangeStateTo(_openState);
+        }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        Debug.Log("Exit");
-        ChangeStateTo(_closeState);
+        if (other.gameObject.layer == LayerConst.PLAYER)
+        {
+            Debug.Log("Exit");
+            ChangeStateTo(_closeState);
+        }
     }
 
     public void Open(bool isPushed)

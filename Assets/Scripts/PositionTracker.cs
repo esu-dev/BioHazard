@@ -5,10 +5,10 @@ using UnityEngine;
 public class PositionTracker : MonoBehaviour
 {
     [SerializeField]
-    GameObject _cameraPos;
+    GameObject _targetPos;
 
     private void FixedUpdate()
     {
-        this.transform.position = _cameraPos.transform.position;
+        this.transform.position = _targetPos.transform.position;
     }
 }

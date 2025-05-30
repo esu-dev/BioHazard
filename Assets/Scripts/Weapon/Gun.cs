@@ -72,10 +72,11 @@ public class Gun : Weapon
                 Debug.Log(hit.transform.gameObject);
 
                 AnimatedRagdoll animatedRagdoll = hit.transform.GetComponentInParent<AnimatedRagdoll>();
-                if (animatedRagdoll && animatedRagdoll.MainBodyGameObject.TryGetComponent(out Humanoid humanoid))
+                Humanoid humanoid = animatedRagdoll?.MainBodyGameObject.GetComponentInParent<Humanoid>();
+                if (humanoid)
                 {
                     (humanoid as Zombie)?.React(hit.transform.gameObject, this.transform.forward);
-                    humanoid?.Damage((int)(_power * Random.Range(0.9f, 1.1f)));
+                    humanoid.Damage((int)(_power * Random.Range(0.9f, 1.1f)));
                 }
             }
 

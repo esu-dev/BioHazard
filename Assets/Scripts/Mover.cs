@@ -41,7 +41,7 @@ public class Mover : FlexUpdateMonoBehaviour
 
     public void Rotate(Vector2 direction)
     {
-        this.transform.forward = Vector3.Slerp(this.transform.forward, direction.ToVector3XZ(), _rotationSpeed * base.FlexDeltaTime);
+        _animatorProxy.animator.transform.forward = Vector3.Slerp(_animatorProxy.animator.transform.forward, direction.ToVector3XZ(), _rotationSpeed * base.FlexDeltaTime);
     }
 
     private void Update()

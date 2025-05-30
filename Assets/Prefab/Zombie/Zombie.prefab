@@ -474,7 +474,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e66e80f3a91c644398913e194441c09, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _cameraPos: {fileID: 1905674797050511053}
+  _targetPos: {fileID: 1905674797050511053}
 --- !u!114 &1931596644041327661
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4622,6 +4622,11 @@ PrefabInstance:
       propertyPath: _rigidbody
       value: 
       objectReference: {fileID: 8226860653050252575}
+    - target: {fileID: 3106036178746574240, guid: a91ffeed239367246902a952792c6a2c,
+        type: 3}
+      propertyPath: _targetZombie
+      value: 
+      objectReference: {fileID: 1905674797050511053}
     - target: {fileID: 3106036178746574240, guid: a91ffeed239367246902a952792c6a2c,
         type: 3}
       propertyPath: _animatedRagdoll

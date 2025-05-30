@@ -14,6 +14,9 @@ public class Zombie : Humanoid
     LayerMask _playerLayer;
 
     [SerializeField]
+    GameObject _targetZombie;
+
+    [SerializeField]
     GameObject[] _bloodEffectPrefabs;
 
     [SerializeField]
@@ -281,9 +284,9 @@ public class Zombie : Humanoid
 
 
             // playerが近い場合、噛みつく
-            if (Vector3.Distance(base.zombie.transform.position, base.zombie._target.transform.position) <= 1.0f)
+            if (Vector3.Distance(base.zombie._targetZombie.transform.position, base.zombie._target.transform.position) <= 1.0f)
             {
-                Ray ray = new Ray(base.zombie.transform.position.AddY(1), base.zombie._target.transform.position - base.zombie.transform.position);
+                Ray ray = new Ray(base.zombie._targetZombie.transform.position.AddY(1), base.zombie._target.transform.position - base.zombie._targetZombie.transform.position);
                 if (Physics.Raycast(ray, 2f, 1 << LayerConst.PLAYER))
                 {
                     // 噛みつく
@@ -308,7 +311,7 @@ public class Zombie : Humanoid
         public override void Enter()
         {
             // プレイヤーの方を向く
-            base.zombie.transform.forward = (base.zombie._target.transform.position - base.zombie.transform.position).RemoveY();
+            base.zombie._targetZombie.transform.forward = (base.zombie._target.transform.position - base.zombie._targetZombie.transform.position).RemoveY();
 
             // アニメーション再生
             base.zombie._animatorProxy.SetTrigger(AnimatorParameterConst.ZombieAnimatorParameter.BITE);
@@ -434,11 +437,11 @@ public class Zombie : Humanoid
             Zombie zombie = base.TargetObject.GetComponent<Zombie>();
 
             Collider[] colliders;
-            if ((colliders = Physics.OverlapBox(zombie.transform.position.AddY(1) + zombie.transform.forward * 3f / 2, Vector3.one * 3f, Quaternion.identity, zombie._playerLayer)).Length > 0)
+            if ((colliders = Physics.OverlapBox(zombie._targetZombie.transform.position.AddY(1) + zombie._targetZombie.transform.forward * 3f / 2, Vector3.one * 3f, Quaternion.identity, zombie._playerLayer)).Length > 0)
             {
                 zombie._target = colliders[0].transform.gameObject;
 
-                zombie.ChangeStateTo(zombie.GetComponent<Zombie>()._trackingState);
+                zombie.ChangeStateTo(zombie._trackingState);
 
                 callback(NodeState.True);
                 return;
@@ -489,7 +492,7 @@ public class Zombie : Humanoid
         public override void Start(UnityAction<NodeState> callback)
         {
             _zombie = base.TargetObject.GetComponent<Zombie>();
-            _direction = (Quaternion.AngleAxis(Random.Range(-90f, 90f), Vector3.up) * (_zombie._target.transform.position - base.TargetObject.transform.position)).ToVector2XZ().normalized;
+            _direction = (Quaternion.AngleAxis(Random.Range(-90f, 90f), Vector3.up) * (_zombie._target.transform.position - _zombie._targetZombie.transform.position)).ToVector2XZ().normalized;
         }
 
         public override void Update()
