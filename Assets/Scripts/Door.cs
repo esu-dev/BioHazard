@@ -55,7 +55,7 @@ public class Door : MonoBehaviour
 
         // 少しドアが空くようにする
         // トルクを加える
-        _rigidbody.AddTorque(new Vector3(0, isPushed ? 0.5f : -0.5f, 0), ForceMode.Impulse);
+        _rigidbody.AddTorque(new Vector3(0, isPushed ? 0.5f : -0.5f, 0), ForceMode.VelocityChange);
     }
 
     private void ChangeStateTo(State state)
