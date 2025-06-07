@@ -12,6 +12,7 @@ public static class AnimatorParameterConst
         public static AnimatorParameterName BITED = new AnimatorParameterName("Bited");
         public static AnimatorParameterName EXIT = new AnimatorParameterName("Exit");
         public static AnimatorParameterName DIE = new AnimatorParameterName("Die");
+        public static AnimatorParameterName RELOAD = new AnimatorParameterName("Reload");
     }
 
     public static class ZombieAnimatorParameter

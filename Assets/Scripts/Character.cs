@@ -113,6 +113,18 @@ public class Character : Humanoid
         (_state as AimState)?.Fire();
     }
 
+    public void Reload()
+    {
+        Gun gun = (_inventory.EquippedWeapon as Gun);
+
+        // リロードが必要なら行う
+        if (gun?.MaxBulletNum - gun?.BulletNum > 0)
+        {
+            _animatorProxy.SetTrigger(AnimatorParameterConst.PlayerAnimatorParameter.RELOAD);
+            _inventory.Reload();
+        }
+    }
+
     public void Bited(GameObject target)
     {
         ChangeStateTo(_bitedState);

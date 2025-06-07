@@ -393,9 +393,9 @@ public class Zombie : Humanoid
             Zombie zombie = base.TargetObject.GetComponent<Zombie>();
 
             Collider[] colliders;
-            if ((colliders = Physics.OverlapBox(zombie.transform.position.AddY(1), new Vector3(5f, 1, 5f), zombie.transform.rotation, zombie._playerLayer)).Length > 0)
+            if ((colliders = Physics.OverlapBox(zombie._targetZombie.transform.position.AddY(1), new Vector3(5f, 1, 5f), zombie._targetZombie.transform.rotation, zombie._playerLayer)).Length > 0)
             {
-                Ray ray = new Ray(zombie.transform.position.AddY(1), colliders[0].transform.position - zombie.transform.position);
+                Ray ray = new Ray(zombie._targetZombie.transform.position.AddY(1), colliders[0].transform.position - zombie._targetZombie.transform.position);
                 if (Physics.Raycast(ray, out RaycastHit hit, 5f, 1 << LayerConst.PLAYER))
                 {
                     zombie._target = hit.transform.gameObject;

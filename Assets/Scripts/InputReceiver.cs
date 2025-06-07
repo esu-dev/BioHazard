@@ -52,7 +52,7 @@ public class InputReceiver : MonoBehaviour
 
     private void OnReload(InputAction.CallbackContext callbackContext)
     {
-        _inventory.Reload();
+        _character.Reload();
     }
 
     private void OnEquipMain(InputAction.CallbackContext callbackContext)
