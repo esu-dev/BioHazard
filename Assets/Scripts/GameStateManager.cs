@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class GameStateManager : SingletonMonoBehaviour<GameStateManager>
+public class GameStateManager : Singleton<GameStateManager>
 {
     State _currentState;
     State _playState;
@@ -12,6 +12,14 @@ public class GameStateManager : SingletonMonoBehaviour<GameStateManager>
     public UnityEvent OnPlayStateEnter => _playState.OnStateEnter;
     public UnityEvent OnPauseStateEnter => _pauseState.OnStateEnter;
     
+
+    public GameStateManager()
+    {
+        _playState = new PlayState();
+        _pauseState = new PauseState();
+
+        ChangeStateToPlayState();
+    }
 
 
     public void ChangeStateToPlayState()
@@ -24,14 +32,6 @@ public class GameStateManager : SingletonMonoBehaviour<GameStateManager>
     {
         _currentState = _pauseState;
         _currentState.Enter();
-    }
-
-    private void Start()
-    {
-        _playState = new PlayState();
-        _pauseState = new PauseState();
-
-        ChangeStateToPlayState();
     }
 
 

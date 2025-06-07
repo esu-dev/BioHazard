@@ -23,6 +23,8 @@ public static class SceneLoader
 
     public static async Task LoadScene(string sceneName)
     {
+        _asyncOperation = null;
+
         // ローディングシーンの読み込み
         SceneManager.LoadScene(SceneNameConst.LOADING);
 
@@ -31,6 +33,7 @@ public static class SceneLoader
         _asyncOperation = SceneManager.LoadSceneAsync(sceneName);
         _asyncOperation.allowSceneActivation = false;
 
+        
         TimeScheduler.CreateSchedule(2f, () => _asyncOperation.allowSceneActivation = true);
     }
 }

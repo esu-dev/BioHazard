@@ -15,13 +15,15 @@ public class LoadingProgressShower : MonoBehaviour
 
     private void Start()
     {
+        _percentText.text = "0%";
+
         StartCoroutine(ShowLoadingText());
     }
 
     private void Update()
     {
-        //_percentText.text = $"{(int)(SceneLoader.Progress * 100)}%";
-        _percentText.text = $"{p++}%";
+        _percentText.text = $"{(int)(SceneLoader.Progress * 100)}%";
+        //_percentText.text = $"{p++}%";
     }
 
     IEnumerator ShowLoadingText()
@@ -29,16 +31,20 @@ public class LoadingProgressShower : MonoBehaviour
         int index = 0;
         string text = "NOW LOADING...";
 
+        _loadingText.text = text;
+
         while (true)
         {
-            _loadingText.text = text.Substring(0, index++);
+            _loadingText.maxVisibleCharacters = index;
 
             if (index > text.Length)
             {
                 index = 0;
             }
 
-            yield return new WaitForSeconds(0.25f);
+            index++;
+
+            yield return new WaitForSeconds(0.15f);
         }
 
     }
