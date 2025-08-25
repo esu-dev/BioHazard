@@ -53,4 +53,15 @@ public static class ListExtension
 
         return copiedList;
     }
+
+    public static T GetValue<T>(this List<List<T>> list, Vector2Int position, T defaultValue)
+    {
+        if (position.x < 0 || position.x >= list.Count ||
+            position.y < 0 || position.y >= list[position.x].Count)
+        {
+            return defaultValue;
+        }
+
+        return list[position.x][position.y];
+    }
 }

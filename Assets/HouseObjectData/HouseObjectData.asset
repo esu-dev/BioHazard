@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4fd2a2f73ef7f147a90d4337967b133, type: 3}
+  m_Name: HouseObjectData
+  m_EditorClassIdentifier: 
+  <Prefab>k__BackingField: {fileID: 9087693824707991967, guid: f191b529f325b1e4283f6b6bda7569aa,
+    type: 3}
+  <Wall>k__BackingField: 1
+  <RelationshipList>k__BackingField: []
